@@ -33,10 +33,10 @@ const KIND_LABELS: Record<KindFilter, string> = {
 };
 
 const KIND_STYLES: Record<Kind, string> = {
-  contact: 'bg-sky-950 text-sky-300 border-sky-800',
-  commitment: 'bg-amber-950 text-amber-300 border-amber-800',
-  pledge: 'bg-emerald-950 text-emerald-300 border-emerald-800',
-  newsletter: 'bg-purple-950 text-purple-300 border-purple-800',
+  contact: 'bg-sky-50 text-sky-700 border-sky-200',
+  commitment: 'bg-[#fbf3e2] text-[#7a5f22] border-[#c3a66b]/50',
+  pledge: 'bg-[#eaf1ea] text-[#285b3c] border-[#285b3c]/25',
+  newsletter: 'bg-purple-50 text-purple-700 border-purple-200',
 };
 
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
@@ -210,25 +210,25 @@ export default function InboxPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0b1c14] text-[#f6f2e7] flex flex-col">
+    <div className="min-h-screen bg-ivory text-charcoal flex flex-col">
       <Navigation />
 
       {phase === 'checking' && (
         <div className="flex-1 flex items-center justify-center py-24">
-          <Loader2 className="w-6 h-6 animate-spin text-[#e4c878]" aria-label="Loading" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#285b3c]" aria-label="Loading" />
         </div>
       )}
 
       {phase === 'unconfigured' && (
         <div className="flex-1 flex items-center justify-center p-4 py-16">
-          <div className="max-w-lg w-full p-8 rounded-3xl bg-[#122b1f] border border-amber-700/50 space-y-4">
-            <div className="flex items-center gap-2 text-amber-300 font-bold">
+          <div className="max-w-lg w-full p-8 rounded-3xl bg-white border border-[#c3a66b]/40 shadow-[0_1px_0_rgba(23,61,43,0.04)] space-y-4">
+            <div className="flex items-center gap-2 text-[#7a5f22] font-bold">
               <AlertCircle className="w-5 h-5" /> Team inbox not set up
             </div>
-            <p className="text-sm text-gray-300">{setupReason}</p>
-            <ol className="text-xs text-gray-300 space-y-1.5 list-decimal pl-5">
+            <p className="text-sm text-[#3f4a42]">{setupReason}</p>
+            <ol className="text-xs text-[#3f4a42] space-y-1.5 list-decimal pl-5">
               <li>Open the Vercel project <strong>oloolua-youth-guardians</strong>, then Settings, then Environment Variables.</li>
-              <li>Add <code className="text-[#e4c878]">INBOX_PASSWORD</code> with a strong password of at least 12 characters.</li>
+              <li>Add <code className="text-[#285b3c]">INBOX_PASSWORD</code> with a strong password of at least 12 characters.</li>
               <li>Redeploy, then share the password only with the team.</li>
             </ol>
           </div>
@@ -237,16 +237,16 @@ export default function InboxPage() {
 
       {phase === 'locked' && (
         <div className="flex-1 flex items-center justify-center p-4 py-16">
-          <form onSubmit={login} className="max-w-sm w-full p-8 rounded-3xl bg-[#122b1f] border border-[#e4c878]/30 shadow-2xl space-y-5">
+          <form onSubmit={login} className="max-w-sm w-full p-8 rounded-3xl bg-white border border-[#173d2b]/12 shadow-[0_24px_60px_-40px_rgba(23,61,43,0.35)] space-y-5">
             <div className="text-center space-y-2">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-600/30 border border-emerald-500/40 flex items-center justify-center text-[#e4c878] mx-auto">
+              <div className="w-12 h-12 rounded-2xl bg-[#eaf1ea] border border-[#285b3c]/20 flex items-center justify-center text-[#285b3c] mx-auto">
                 <Lock className="w-6 h-6" />
               </div>
-              <h1 className="text-xl font-bold text-white">Team Inbox</h1>
-              <p className="text-xs text-gray-400">Contact messages, commitments, pledges and newsletter sign-ups.</p>
+              <h1 className="font-display text-xl text-[#173d2b]">Team Inbox</h1>
+              <p className="text-xs text-[#3f4a42]/70">Messages from the website.</p>
             </div>
             <div>
-              <label htmlFor="inbox-password" className="block text-xs font-semibold text-gray-300 mb-1">Team password</label>
+              <label htmlFor="inbox-password" className="block text-xs font-semibold text-[#3f4a42] mb-1">Team password</label>
               <input
                 id="inbox-password"
                 type="password"
@@ -255,23 +255,23 @@ export default function InboxPage() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#0b1c14] border border-[#e4c878]/30 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-[#e4c878]"
+                className="w-full bg-[#f7f6f0] border border-[#173d2b]/15 rounded-lg px-3 py-2.5 text-sm text-[#252b27] focus:outline-none focus:border-[#285b3c] focus:bg-white"
               />
             </div>
             {loginError && (
-              <div role="alert" className="flex items-start gap-2 rounded-lg px-3 py-2.5 text-xs border bg-red-950/60 border-red-800 text-red-200">
+              <div role="alert" className="flex items-start gap-2 rounded-lg px-3 py-2.5 text-xs border bg-red-50 border-red-200 text-red-700">
                 <AlertCircle className="w-4 h-4 shrink-0" /> <span>{loginError}</span>
               </div>
             )}
             <button
               type="submit"
               disabled={loggingIn}
-              className="w-full py-3 rounded-xl bg-[#e4c878] hover:bg-amber-300 disabled:opacity-60 text-neutral-950 font-bold text-sm flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-3 rounded-xl bg-[#173d2b] hover:bg-[#285b3c] disabled:opacity-60 text-[#f7f6f0] font-bold text-sm flex items-center justify-center gap-2 transition-colors"
             >
               {loggingIn ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-              {loggingIn ? 'Checking...' : 'Open Inbox'}
+              {loggingIn ? 'Checking...' : 'Sign In'}
             </button>
-            <p className="text-[11px] text-gray-500 text-center">Sessions end automatically after 8 hours.</p>
+            <p className="text-[11px] text-[#3f4a42]/50 text-center">Sessions end after 8 hours.</p>
           </form>
         </div>
       )}
@@ -281,28 +281,28 @@ export default function InboxPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-emerald-600/30 flex items-center justify-center text-[#e4c878]">
+              <div className="w-11 h-11 rounded-xl bg-[#eaf1ea] border border-[#285b3c]/15 flex items-center justify-center text-[#285b3c]">
                 <Inbox className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl font-extrabold text-white">Team Inbox</h1>
-                <p className="text-xs text-gray-400">{openCount('all')} open across all forms</p>
+                <h1 className="font-display text-2xl text-[#173d2b]">Team Inbox</h1>
+                <p className="text-xs text-[#3f4a42]/65">{openCount('all')} open messages</p>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <button onClick={load} disabled={loading} className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <button onClick={load} disabled={loading} className="px-3 py-2 rounded-lg bg-white border border-[#173d2b]/15 hover:bg-[#173d2b]/5 text-[#173d2b] text-xs font-semibold flex items-center gap-1.5 transition-colors">
                 <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} /> Refresh
               </button>
-              <button onClick={exportCsv} disabled={visible.length === 0} className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 disabled:opacity-40 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <button onClick={exportCsv} disabled={visible.length === 0} className="px-3 py-2 rounded-lg bg-white border border-[#173d2b]/15 hover:bg-[#173d2b]/5 disabled:opacity-40 text-[#173d2b] text-xs font-semibold flex items-center gap-1.5 transition-colors">
                 <Download className="w-3.5 h-3.5" /> Export CSV
               </button>
               {kind === 'newsletter' && (
-                <button onClick={copyEmails} disabled={visible.length === 0} className="px-3 py-2 rounded-lg bg-purple-700 hover:bg-purple-600 disabled:opacity-40 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+                <button onClick={copyEmails} disabled={visible.length === 0} className="px-3 py-2 rounded-lg bg-[#173d2b] hover:bg-[#285b3c] disabled:opacity-40 text-[#f7f6f0] text-xs font-semibold flex items-center gap-1.5 transition-colors">
                   {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copied ? 'Copied' : 'Copy all emails'}
+                  {copied ? 'Copied' : 'Copy emails'}
                 </button>
               )}
-              <button onClick={logout} className="px-3 py-2 rounded-lg border border-white/15 hover:bg-white/10 text-xs font-semibold flex items-center gap-1.5 transition-colors">
+              <button onClick={logout} className="px-3 py-2 rounded-lg border border-[#173d2b]/15 hover:bg-[#173d2b]/5 text-[#173d2b] text-xs font-semibold flex items-center gap-1.5 transition-colors">
                 <LogOut className="w-3.5 h-3.5" /> Log out
               </button>
             </div>
@@ -318,12 +318,12 @@ export default function InboxPage() {
                   aria-selected={kind === k}
                   onClick={() => setKind(k)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors ${
-                    kind === k ? 'bg-[#e4c878] text-neutral-950' : 'bg-[#122b1f] text-gray-300 hover:text-white border border-white/10'
+                    kind === k ? 'bg-[#173d2b] text-[#f7f6f0]' : 'bg-white text-[#3f4a42] hover:text-[#173d2b] border border-[#173d2b]/15 hover:border-[#285b3c]/40'
                   }`}
                 >
                   {KIND_LABELS[k]}
                   {openCount(k) > 0 && (
-                    <span className={`px-1.5 rounded-full text-[10px] ${kind === k ? 'bg-neutral-950/15' : 'bg-emerald-700 text-white'}`}>
+                    <span className={`px-1.5 rounded-full text-[10px] ${kind === k ? 'bg-[#f7f6f0]/15 text-[#f7f6f0]' : 'bg-[#eaf1ea] text-[#285b3c]'}`}>
                       {openCount(k)}
                     </span>
                   )}
@@ -335,28 +335,28 @@ export default function InboxPage() {
                 value={status}
                 onChange={(e) => setStatus(e.target.value as StatusFilter)}
                 aria-label="Status"
-                className="bg-[#122b1f] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-[#e4c878]/60"
+                className="bg-white border border-[#173d2b]/15 rounded-lg px-2.5 py-1.5 text-xs text-[#252b27] focus:outline-none focus:border-[#285b3c]"
               >
                 <option value="open">Open</option>
                 <option value="handled">Handled</option>
                 <option value="all">All</option>
               </select>
               <div className="relative flex-1 lg:w-64">
-                <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-[#3f4a42]/40 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search name, contact, message"
+                  placeholder="Search messages"
                   aria-label="Search messages"
-                  className="w-full bg-[#122b1f] border border-white/10 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#e4c878]/60"
+                  className="w-full bg-white border border-[#173d2b]/15 rounded-lg pl-8 pr-2.5 py-1.5 text-xs text-[#252b27] placeholder:text-[#252b27]/35 focus:outline-none focus:border-[#285b3c]"
                 />
               </div>
             </div>
           </div>
 
           {loadError && (
-            <div role="alert" className="flex items-start gap-2 rounded-xl px-4 py-3 text-xs border bg-red-950/60 border-red-800 text-red-200">
+            <div role="alert" className="flex items-start gap-2 rounded-xl px-4 py-3 text-xs border bg-red-50 border-red-200 text-red-700">
               <AlertCircle className="w-4 h-4 shrink-0" /> <span>{loadError}</span>
             </div>
           )}
@@ -364,10 +364,10 @@ export default function InboxPage() {
           {/* List */}
           {loading && messages.length === 0 ? (
             <div className="space-y-3" aria-busy="true">
-              {[0, 1, 2].map((i) => <div key={i} className="h-24 rounded-2xl bg-[#122b1f] animate-pulse" />)}
+              {[0, 1, 2].map((i) => <div key={i} className="h-24 rounded-2xl bg-[#ecebe3] animate-pulse" />)}
             </div>
           ) : visible.length === 0 ? (
-            <div className="p-10 rounded-2xl bg-[#122b1f] border border-dashed border-white/15 text-center text-sm text-gray-400">
+            <div className="p-10 rounded-2xl bg-white border border-dashed border-[#173d2b]/15 text-center text-sm text-[#3f4a42]/60">
               {q ? `No messages match "${query}".` : status === 'open' ? 'All caught up. No open messages here.' : 'No messages yet.'}
             </div>
           ) : (
@@ -379,42 +379,42 @@ export default function InboxPage() {
                   <li
                     key={m.id}
                     className={`p-4 sm:p-5 rounded-2xl border transition-colors ${
-                      m.handled_at ? 'bg-[#0f2219] border-white/5 opacity-75' : 'bg-[#122b1f] border-[#e4c878]/20'
+                      m.handled_at ? 'bg-[#fbfaf5] border-[#173d2b]/8 opacity-80' : 'bg-white border-[#173d2b]/12 border-l-2 border-l-[#c3a66b]'
                     }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                       <div className="space-y-1.5 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${KIND_STYLES[m.kind]}`}>{m.kind}</span>
-                          <span className="font-bold text-white">{m.name || 'Newsletter subscriber'}</span>
-                          <time dateTime={m.created_at} title={new Date(m.created_at).toLocaleString()} className="text-[11px] text-gray-500">
+                          <span className="font-bold text-[#173d2b]">{m.name || 'Newsletter subscriber'}</span>
+                          <time dateTime={m.created_at} title={new Date(m.created_at).toLocaleString()} className="text-[11px] text-[#3f4a42]/45">
                             {timeAgo(m.created_at)}
                           </time>
                           {m.handled_at && (
-                            <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                            <span className="text-[11px] text-[#285b3c] flex items-center gap-1">
                               <CheckCircle2 className="w-3 h-3" /> handled
                             </span>
                           )}
                         </div>
-                        <div className="text-xs text-emerald-300 break-all">{m.contact}</div>
-                        {m.message && <p className="text-sm text-gray-200 whitespace-pre-wrap break-words">{m.message}</p>}
+                        <div className="text-xs text-[#285b3c] break-all">{m.contact}</div>
+                        {m.message && <p className="text-sm text-[#3f4a42] whitespace-pre-wrap break-words">{m.message}</p>}
                       </div>
 
                       <div className="flex flex-wrap gap-2 shrink-0">
                         {email ? (
                           <a
                             href={`mailto:${m.contact}?subject=${encodeURIComponent('Re: your message to Oloolua Youth Guardians')}`}
-                            className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5"
+                            className="px-2.5 py-1.5 rounded-lg bg-[#f1f0e9] hover:bg-[#e7e5db] text-[#173d2b] text-xs font-semibold flex items-center gap-1.5"
                           >
                             <Mail className="w-3.5 h-3.5" /> Reply
                           </a>
                         ) : (
                           <>
-                            <a href={`tel:${m.contact.replace(/[^\d+]/g, '')}`} className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center gap-1.5">
+                            <a href={`tel:${m.contact.replace(/[^\d+]/g, '')}`} className="px-2.5 py-1.5 rounded-lg bg-[#f1f0e9] hover:bg-[#e7e5db] text-[#173d2b] text-xs font-semibold flex items-center gap-1.5">
                               <Phone className="w-3.5 h-3.5" /> Call
                             </a>
                             {wa && (
-                              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-xs font-semibold flex items-center gap-1.5">
+                              <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="px-2.5 py-1.5 rounded-lg bg-[#eaf1ea] border border-[#285b3c]/20 hover:bg-[#dce8dc] text-[#285b3c] text-xs font-semibold flex items-center gap-1.5">
                                 <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
                               </a>
                             )}
@@ -424,11 +424,11 @@ export default function InboxPage() {
                           onClick={() => toggleHandled(m)}
                           disabled={busyId === m.id}
                           className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50 ${
-                            m.handled_at ? 'border border-white/15 hover:bg-white/10' : 'bg-[#e4c878] hover:bg-amber-300 text-neutral-950'
+                            m.handled_at ? 'border border-[#173d2b]/15 hover:bg-[#173d2b]/5 text-[#173d2b]' : 'bg-[#173d2b] hover:bg-[#285b3c] text-[#f7f6f0]'
                           }`}
                         >
                           {m.handled_at ? <RotateCcw className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-                          {m.handled_at ? 'Reopen' : 'Mark handled'}
+                          {m.handled_at ? 'Reopen' : 'Done'}
                         </button>
                       </div>
                     </div>
@@ -438,7 +438,7 @@ export default function InboxPage() {
             </ul>
           )}
           {visible.length > 0 && (
-            <p className="text-[11px] text-gray-500">Showing {visible.length} message{visible.length === 1 ? '' : 's'} (newest first, up to 500).</p>
+            <p className="text-[11px] text-[#3f4a42]/45">Showing {visible.length} message{visible.length === 1 ? '' : 's'}. Newest first.</p>
           )}
         </div>
       )}

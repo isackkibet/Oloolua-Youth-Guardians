@@ -46,7 +46,7 @@ const LANGS = [
 function SourceTags({ sources }: { sources?: SourceLabel[] }) {
   if (!sources) return null;
   if (sources.length === 0) {
-    return <span className="text-[10px] text-gray-500">No Guardian data used</span>;
+    return <span className="text-[10px] text-[#3f4a42]/50">No Guardian data used</span>;
   }
   return (
     <span className="flex flex-wrap gap-1">
@@ -54,7 +54,7 @@ function SourceTags({ sources }: { sources?: SourceLabel[] }) {
         const Icon = SOURCE_ICONS[s];
         return (
           <span key={s} className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
-            s === 'External Source' ? 'bg-sky-950 text-sky-300 border-sky-800' : 'bg-emerald-950 text-emerald-300 border-emerald-800'
+            s === 'External Source' ? 'bg-sky-50 text-sky-700 border-sky-200' : 'bg-[#eaf1ea] text-[#285b3c] border-[#285b3c]/20'
           }`}>
             <Icon className="w-3 h-3" /> {s}
           </span>
@@ -75,13 +75,13 @@ function PanelView({ panel }: { panel: Panel }) {
     <div className="mt-2">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {tiles.map(([k, v]) => (
-          <div key={k} className="rounded-lg bg-[#0b1c14] border border-[#e4c878]/20 p-2.5">
-            <div className="text-[10px] text-gray-400 uppercase tracking-wide">{k}</div>
-            <div className="text-lg font-black text-white tabular-nums">{v}</div>
+          <div key={k} className="rounded-lg bg-white border border-[#173d2b]/10 p-2.5">
+            <div className="text-[10px] text-[#3f4a42]/60 uppercase tracking-wide">{k}</div>
+            <div className="text-lg font-black text-[#173d2b] tabular-nums">{v}</div>
           </div>
         ))}
       </div>
-      {panel.asOf && <p className="text-[10px] text-gray-500 mt-1">Baseline as of {formatDate(panel.asOf)}. Capacity is not current stock.</p>}
+      {panel.asOf && <p className="text-[10px] text-[#3f4a42]/50 mt-1">Baseline as of {formatDate(panel.asOf)}. Capacity is not current stock.</p>}
     </div>
   );
 }
@@ -227,23 +227,23 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
   ];
 
   return (
-    <div className="flex flex-col h-[70vh] min-h-[480px] rounded-2xl bg-[#122b1f] border border-[#e4c878]/25 overflow-hidden">
+    <div className="flex flex-col h-[70vh] min-h-[480px] rounded-2xl bg-white border border-[#173d2b]/10 overflow-hidden shadow-[0_1px_0_rgba(23,61,43,0.04)]">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-white/10">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-[#173d2b]/10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600/30 flex items-center justify-center text-[#e4c878]"><Bot className="w-5 h-5" /></div>
+          <div className="w-8 h-8 rounded-lg bg-[#eaf1ea] border border-[#285b3c]/15 flex items-center justify-center text-[#285b3c]"><Bot className="w-5 h-5" /></div>
           <div>
-            <div className="font-bold text-white text-sm">AI Guardian</div>
-            <div className="text-[10px] text-emerald-300">Answers come from the Guardian database. Nothing is invented.</div>
+            <div className="font-bold text-[#173d2b] text-sm">AI Guardian</div>
+            <div className="text-[10px] text-[#285b3c]">Answers come only from Guardian records.</div>
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs">
           {quota && (
-            <span className={`px-2 py-1 rounded-lg font-semibold ${outOfPrompts ? 'bg-red-950 text-red-200' : 'bg-white/5 text-gray-200'}`} aria-live="polite">
+            <span className={`px-2 py-1 rounded-lg font-semibold border ${outOfPrompts ? 'bg-red-50 text-red-700 border-red-200' : 'bg-[#f7f6f0] text-[#3f4a42] border-[#173d2b]/10'}`} aria-live="polite">
               {quota.exempt ? 'Unlimited prompts' : `Prompts left: ${quota.remaining} of ${quota.limit}${quota.period === 'daily' ? ' today' : ''}`}
             </span>
           )}
-          <select value={lang} onChange={(e) => setLang(e.target.value)} aria-label="Voice language" className="bg-[#0b1c14] border border-white/10 rounded-lg px-1.5 py-1 text-white">
+          <select value={lang} onChange={(e) => setLang(e.target.value)} aria-label="Voice language" className="bg-[#f7f6f0] border border-[#173d2b]/15 rounded-lg px-1.5 py-1 text-[#252b27] focus:outline-none focus:border-[#285b3c]">
             {LANGS.map((l) => <option key={l.code} value={l.code}>{l.label}</option>)}
           </select>
           <button
@@ -251,7 +251,7 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
             onClick={() => { setSpeakReplies((s) => !s); stopSpeaking(); }}
             aria-pressed={speakReplies}
             title={speakReplies ? 'Spoken replies on (for voice questions)' : 'Spoken replies off'}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-gray-300"
+            className="p-1.5 rounded-lg hover:bg-[#173d2b]/5 text-[#3f4a42]/70"
           >
             {speakReplies ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
@@ -262,11 +262,11 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
       <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3" aria-live="polite">
         {messages.length === 0 && (
           <div className="text-center py-6 space-y-3">
-            <Sparkles className="w-8 h-8 mx-auto text-[#e4c878]" />
-            <p className="text-sm text-gray-200">Hello {firstName}. Ask about the nursery{can(role, 'record') ? ' or record an activity' : ''}, by typing or with the microphone.</p>
+            <Sparkles className="w-8 h-8 mx-auto text-[#c3a66b]" />
+            <p className="text-sm text-[#3f4a42]">Hello {firstName}. Ask about the nursery{can(role, 'record') ? ' or record an activity' : ''}. Type or speak your question.</p>
             <div className="flex flex-wrap justify-center gap-2">
               {suggestions.map((s) => (
-                <button key={s} type="button" disabled={inputLocked} onClick={() => send(s)} className="px-3 py-1.5 rounded-full bg-[#0b1c14] border border-white/10 hover:border-[#e4c878]/50 text-xs text-gray-200 disabled:opacity-40">
+                <button key={s} type="button" disabled={inputLocked} onClick={() => send(s)} className="px-3 py-1.5 rounded-full bg-[#f7f6f0] border border-[#173d2b]/12 hover:border-[#285b3c]/40 hover:bg-white text-xs text-[#252b27] disabled:opacity-40">
                   {s}
                 </button>
               ))}
@@ -276,11 +276,11 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[92%] sm:max-w-[80%] rounded-2xl px-3.5 py-2.5 text-sm ${
-              m.role === 'user' ? 'bg-emerald-700 text-white rounded-br-sm' : m.error ? 'bg-red-950/60 border border-red-800 text-red-100 rounded-bl-sm' : 'bg-[#0d2219] border border-white/10 text-gray-100 rounded-bl-sm'
+              m.role === 'user' ? 'bg-[#173d2b] text-[#f7f6f0] rounded-br-sm' : m.error ? 'bg-red-50 border border-red-200 text-red-700 rounded-bl-sm' : 'bg-[#f7f6f0] border border-[#173d2b]/10 text-[#252b27] rounded-bl-sm'
             }`}>
-              {m.role === 'user' && m.channel === 'voice' && <div className="text-[10px] text-emerald-200 mb-0.5 flex items-center gap-1"><Mic className="w-3 h-3" /> Voice transcript</div>}
+              {m.role === 'user' && m.channel === 'voice' && <div className="text-[10px] text-[#dce8dc] mb-0.5 flex items-center gap-1"><Mic className="w-3 h-3" /> Voice transcript</div>}
               <p className="whitespace-pre-wrap break-words">{m.text}</p>
-              {m.saved && <p className="mt-1.5 flex items-center gap-1 text-emerald-300 text-xs font-semibold"><CheckCircle2 className="w-3.5 h-3.5" /> Record saved</p>}
+              {m.saved && <p className="mt-1.5 flex items-center gap-1 text-[#285b3c] text-xs font-semibold"><CheckCircle2 className="w-3.5 h-3.5" /> Record saved</p>}
               {m.panel && <PanelView panel={m.panel} />}
               {m.draft && m.id === latestDraftMsgId && openDraft && openDraft.id === m.draft.id && (
                 <DraftCard draft={openDraft} onSaved={onDraftSaved} onCancelled={onDraftCancelled} />
@@ -290,17 +290,17 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
           </div>
         ))}
         {busy && (
-          <div className="flex items-center gap-2 text-xs text-gray-400"><Loader2 className="w-4 h-4 animate-spin" /> AI Guardian is checking the records...</div>
+          <div className="flex items-center gap-2 text-xs text-[#3f4a42]/60"><Loader2 className="w-4 h-4 animate-spin" /> Checking records...</div>
         )}
       </div>
 
       {/* Input */}
-      <form onSubmit={(e) => { e.preventDefault(); void send(input); }} className="border-t border-white/10 p-3 space-y-2">
+      <form onSubmit={(e) => { e.preventDefault(); void send(input); }} className="border-t border-[#173d2b]/10 p-3 space-y-2">
         {outOfPrompts && !openDraft && (
-          <p role="status" className="text-xs text-red-200">You have used all your AI Guardian prompts. The Hub tools still work, and confirming or cancelling drafts never uses a prompt.</p>
+          <p role="status" className="text-xs text-red-700">You have used all your prompts. Hub tools still work. Confirming a draft is free.</p>
         )}
         {openDraft && openDraft.status === 'draft' && (
-          <p className="text-xs text-amber-200">Answering the draft&apos;s question does not use a prompt.</p>
+          <p className="text-xs text-[#7a5f22]">This answer does not use a prompt.</p>
         )}
         <div className="flex items-end gap-2">
           <label htmlFor="guardian-input" className="sr-only">Message AI Guardian</label>
@@ -312,10 +312,10 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); void send(input); } }}
             placeholder={listening ? 'Listening...' : openDraft?.question ?? 'Ask AI Guardian...'}
-            className="flex-1 resize-none bg-[#0b1c14] border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#e4c878]/60 disabled:opacity-50"
+            className="flex-1 resize-none bg-[#f7f6f0] border border-[#173d2b]/15 rounded-xl px-3 py-2.5 text-sm text-[#252b27] placeholder:text-[#252b27]/35 focus:outline-none focus:border-[#285b3c] focus:bg-white disabled:opacity-50"
           />
           {speaking && (
-            <button type="button" onClick={stopSpeaking} title="Stop speaking" className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white">
+            <button type="button" onClick={stopSpeaking} title="Stop speaking" className="p-2.5 rounded-xl bg-[#173d2b]/10 hover:bg-[#173d2b]/15 text-[#173d2b]">
               <Square className="w-4 h-4" />
             </button>
           )}
@@ -325,16 +325,16 @@ export default function GuardianChat({ role, firstName, quota, onQuota, onRecord
             disabled={!voiceSupported || inputLocked}
             title={voiceSupported ? (listening ? 'Stop listening' : 'Speak') : 'Voice input is not supported in this browser. Please type.'}
             aria-pressed={listening}
-            className={`p-2.5 rounded-xl disabled:opacity-40 ${listening ? 'bg-red-600 text-white animate-pulse' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+            className={`p-2.5 rounded-xl disabled:opacity-40 ${listening ? 'bg-red-600 text-white animate-pulse' : 'bg-[#f1f0e9] hover:bg-[#e7e5db] text-[#173d2b]'}`}
           >
             {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
           </button>
-          <button type="submit" disabled={inputLocked || !input.trim()} className="p-2.5 rounded-xl bg-[#e4c878] hover:bg-amber-300 text-neutral-950 disabled:opacity-40" aria-label="Send">
+          <button type="submit" disabled={inputLocked || !input.trim()} className="p-2.5 rounded-xl bg-[#173d2b] hover:bg-[#285b3c] text-[#f7f6f0] disabled:opacity-40" aria-label="Send">
             {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </button>
         </div>
-        <p className="text-[10px] text-gray-500">
-          Voice uses your browser&apos;s speech service; our server receives only the text, and no audio is stored. Conversations are not saved as records.
+        <p className="text-[10px] text-[#3f4a42]/50">
+          Voice uses your browser. We receive text only and store no audio. Chats are not saved as records.
         </p>
       </form>
     </div>

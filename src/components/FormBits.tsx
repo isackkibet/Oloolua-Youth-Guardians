@@ -23,8 +23,8 @@ export function FormFeedback({ status, message }: { status: FormStatus; message:
       role={ok ? 'status' : 'alert'}
       className={`flex items-start gap-2 rounded-lg px-3 py-2.5 text-xs border ${
         ok
-          ? 'bg-emerald-950/70 border-emerald-700 text-emerald-200'
-          : 'bg-red-950/60 border-red-800 text-red-200'
+          ? 'bg-[#eef3ea] border-[#285b3c]/30 text-[#173d2b]'
+          : 'bg-[#fbeceb] border-[#a33a2f]/30 text-[#7a2118]'
       }`}
     >
       {ok ? <CheckCircle className="w-4 h-4 shrink-0" /> : <AlertCircle className="w-4 h-4 shrink-0" />}

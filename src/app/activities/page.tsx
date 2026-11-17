@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Navigation from '@/components/Navigation';
+import PageLayout from '@/components/PageLayout';
 import { PlusCircle, MapPin, BookOpen, ArrowRight } from 'lucide-react';
 
 // Static illustrations of our field work. Per PRD v1.2 (B4) every static
@@ -15,59 +15,67 @@ const EXAMPLES = [
 
 export default function ActivitiesPage() {
   return (
-    <div className="min-h-screen bg-[#0b1c14] text-[#f6f2e7] flex flex-col">
-      <Navigation />
+    <PageLayout
+      title="Conservation Activities"
+      subtitle="See the work our youth guardians do. Official records are checked before they count."
+      eyebrow="Our Work"
+    >
+      <section className="py-16 sm:py-20">
+        <div className="max-w-6xl mx-auto container-px">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+            <div>
+              <span className="eyebrow">Field Work</span>
+              <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">Our work in the field</h2>
+              <p className="mt-3 text-sm text-[#3f4a42]/80 max-w-xl leading-relaxed">
+                These examples show our nursery and field work. Every official record is checked.
+              </p>
+            </div>
+            <Link
+              href="/portal?tab=record"
+              className="btn btn-primary shrink-0 self-start sm:self-auto"
+            >
+              <PlusCircle className="w-4 h-4 text-[#c3a66b]" />
+              Record Activity
+            </Link>
+          </div>
 
-      <section className="bg-[#122b1f] border-b border-[#e4c878]/20 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div className="space-y-2">
-            <span className="text-[#e4c878] font-bold text-xs uppercase tracking-widest">Field Stewardship</span>
-            <h1 className="text-3xl sm:text-5xl font-extrabold text-white">Conservation Activities</h1>
-            <p className="text-xs sm:text-sm text-gray-300">
-              The kinds of work our youth guardians do. Official activity records are kept in the Keeper Diary and are marked verified only after independent review.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-9">
+            {EXAMPLES.map((act, i) => (
+              <div key={act.title} className="pt-5 border-t border-[#173d2b]/15">
+                <div className="flex justify-between items-start gap-4">
+                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#285b3c]">
+                    {String(i + 1).padStart(2, '0')} · {act.category}
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full text-[0.6rem] font-semibold uppercase tracking-[0.12em] bg-[#173d2b]/[0.06] text-[#285b3c]">
+                    Example
+                  </span>
+                </div>
+                <h3 className="mt-3 font-display text-2xl text-[#173d2b]">{act.title}</h3>
+                <div className="mt-2 flex items-center gap-1.5 text-sm text-[#3f4a42]/70">
+                  <MapPin className="w-4 h-4 text-[#c3a66b]" strokeWidth={1.6} />
+                  <span>{act.location}</span>
+                </div>
+              </div>
+            ))}
           </div>
 
           <Link
-            href="/portal?tab=record"
-            className="px-5 py-3 rounded-xl font-bold text-xs bg-[#e4c878] hover:bg-amber-300 text-neutral-950 transition-colors shadow-lg flex items-center gap-2 shrink-0"
+            href="/portal?tab=diary"
+            className="group mt-14 flex items-center gap-4 p-6 sm:p-7 bg-[#f2f0e8] border border-[#173d2b]/12 hover:border-[#c3a66b] transition-colors"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>Record Activity</span>
+            <BookOpen className="w-7 h-7 text-[#c3a66b] shrink-0" strokeWidth={1.4} />
+            <div className="flex-1">
+              <div className="font-display text-xl text-[#173d2b] group-hover:text-[#285b3c] transition-colors">
+                View the Keeper Diary
+              </div>
+              <div className="text-sm text-[#3f4a42]/70">
+                Checked records in the Guardian Hub. Sign in to view.
+              </div>
+            </div>
+            <ArrowRight className="w-5 h-5 text-[#285b3c] transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
         </div>
       </section>
-
-      <section className="max-w-5xl mx-auto px-4 py-12 space-y-6 flex-1 w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {EXAMPLES.map((act) => (
-            <div key={act.title} className="p-6 rounded-2xl bg-[#122b1f] border border-[#e4c878]/20 space-y-3">
-              <div className="flex justify-between items-start">
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
-                  {act.category}
-                </span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-white/5 text-gray-300 border border-white/15">
-                  Example
-                </span>
-              </div>
-              <h3 className="text-lg font-bold text-white">{act.title}</h3>
-              <div className="flex items-center gap-1 text-xs text-gray-400">
-                <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{act.location}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <Link href="/portal?tab=diary" className="group flex items-center gap-3 p-5 rounded-2xl bg-[#122b1f] border border-[#e4c878]/30 hover:border-[#e4c878]/60 transition-colors">
-          <BookOpen className="w-6 h-6 text-[#e4c878] shrink-0" />
-          <div className="flex-1">
-            <div className="font-bold text-white group-hover:text-[#e4c878] transition-colors">See the official Keeper Diary</div>
-            <div className="text-xs text-gray-400">Confirmed and verified records, in the Guardian Hub (sign in).</div>
-          </div>
-          <ArrowRight className="w-5 h-5 text-[#e4c878]" />
-        </Link>
-      </section>
-    </div>
+    </PageLayout>
   );
 }

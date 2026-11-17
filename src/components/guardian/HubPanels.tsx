@@ -6,10 +6,10 @@ import { ACTIVITY_TYPES, ACTIVITY_TYPE_KEYS, ROLES, ROLE_LABELS, STATUS_LABELS, 
 import DraftCard from './DraftCard';
 import { api, fmt, formatDate, readTool, writeTool, type DraftView } from './api';
 
-const card = 'rounded-2xl bg-[#122b1f] border border-[#e4c878]/20 p-4 sm:p-5';
-const th = 'py-2 px-2 text-left text-[10px] uppercase tracking-wide text-gray-400 font-semibold';
+const card = 'rounded-2xl bg-white border border-[#173d2b]/10 p-4 sm:p-5 shadow-[0_1px_0_rgba(23,61,43,0.04)]';
+const th = 'py-2 px-2 text-left text-[10px] uppercase tracking-wide text-[#3f4a42]/60 font-semibold';
 const td = 'py-2 px-2 align-top';
-const input = 'bg-[#0b1c14] border border-white/10 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-[#e4c878]/60';
+const input = 'bg-[#f7f6f0] border border-[#173d2b]/15 rounded-lg px-2.5 py-2 text-xs text-[#252b27] placeholder:text-[#252b27]/35 focus:outline-none focus:border-[#285b3c] focus:bg-white';
 
 function useLoad<T>(loader: () => Promise<{ ok: boolean; data: any }>, deps: unknown[] = []) {
   const [data, setData] = useState<T | null>(null);
@@ -29,20 +29,20 @@ function useLoad<T>(loader: () => Promise<{ ok: boolean; data: any }>, deps: unk
 
 function Status({ status }: { status: RecordStatus }) {
   const style = {
-    confirmed: 'bg-amber-950 text-amber-300 border-amber-800',
-    verified: 'bg-emerald-950 text-emerald-300 border-emerald-800',
-    rejected: 'bg-red-950 text-red-300 border-red-800',
-    corrected: 'bg-white/5 text-gray-400 border-white/10',
+    confirmed: 'bg-[#fbf3e2] text-[#7a5f22] border-[#c3a66b]/60',
+    verified: 'bg-[#eaf1ea] text-[#285b3c] border-[#285b3c]/30',
+    rejected: 'bg-red-50 text-red-700 border-red-200',
+    corrected: 'bg-[#f1f0e9] text-[#3f4a42]/70 border-[#173d2b]/10',
   }[status];
   return <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${style}`}>{STATUS_LABELS[status]}</span>;
 }
 
 function DashRow({ cols, text }: { cols: number; text?: string }) {
-  return <tr><td colSpan={cols} className="py-3 px-2 text-center text-gray-500">{text ?? '-'}</td></tr>;
+  return <tr><td colSpan={cols} className="py-3 px-2 text-center text-[#3f4a42]/45">{text ?? '-'}</td></tr>;
 }
 
 function Problem({ text }: { text: string }) {
-  return <p role="alert" className="flex items-center gap-1.5 text-xs text-red-300"><AlertCircle className="w-3.5 h-3.5" />{text}</p>;
+  return <p role="alert" className="flex items-center gap-1.5 text-xs text-red-700"><AlertCircle className="w-3.5 h-3.5" />{text}</p>;
 }
 
 // ── Nursery ──────────────────────────────────────────────────────────────────
@@ -56,46 +56,46 @@ export function NurseryPanel({ refreshKey }: { refreshKey: number }) {
   return (
     <div className="space-y-4">
       <div className={card}>
-        <h3 className="font-bold text-white mb-3">{s?.nurseryName ?? 'Nursery'} summary</h3>
+        <h3 className="font-bold text-[#173d2b] mb-3">{s?.nurseryName ?? 'Nursery'} summary</h3>
         {summary.error && <Problem text={summary.error} />}
-        {summary.loading && !s ? <Loader2 className="w-5 h-5 animate-spin text-[#e4c878]" /> : s && (
+        {summary.loading && !s ? <Loader2 className="w-5 h-5 animate-spin text-[#285b3c]" /> : s && (
           <>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {[
-                ['Currently ready', fmt(s.readyStockVerified), 'Verified ready stock'],
-                ['Nursery capacity', s.capacity !== null ? fmt(s.capacity) : '-', 'Capacity, not current stock'],
-                ['Cataloged species', String(s.speciesCount), 'Species records'],
-                ['Active seedbeds', String(s.activeSeedbeds), 'Seedbed records'],
+                ['Ready now', fmt(s.readyStockVerified), 'Checked stock'],
+                ['Capacity', s.capacity !== null ? fmt(s.capacity) : '-', 'Total space, not stock'],
+                ['Tree species', String(s.speciesCount), 'On the list'],
+                ['Active seedbeds', String(s.activeSeedbeds), 'In use'],
               ].map(([k, v, hint]) => (
-                <div key={k} className="rounded-xl bg-[#0b1c14] border border-white/10 p-3">
-                  <div className="text-[10px] uppercase tracking-wide text-gray-400">{k}</div>
-                  <div className="text-2xl font-black text-white tabular-nums">{v}</div>
-                  <div className="text-[10px] text-emerald-400">{hint}</div>
+                <div key={k} className="rounded-xl bg-[#f7f6f0] border border-[#173d2b]/10 p-3">
+                  <div className="text-[10px] uppercase tracking-wide text-[#3f4a42]/60">{k}</div>
+                  <div className="text-2xl font-black text-[#173d2b] tabular-nums">{v}</div>
+                  <div className="text-[10px] text-[#285b3c]">{hint}</div>
                 </div>
               ))}
             </div>
             {s.readyStockPendingNet !== 0 && (
-              <p className="text-xs text-amber-200 mt-2">Confirmed records not yet verified would change ready stock by {s.readyStockPendingNet > 0 ? '+' : ''}{fmt(s.readyStockPendingNet)}.</p>
+              <p className="text-xs text-[#7a5f22] mt-2">New confirmed records will change ready stock by {s.readyStockPendingNet > 0 ? '+' : ''}{fmt(s.readyStockPendingNet)}.</p>
             )}
-            {s.baseline && <p className="text-[11px] text-gray-500 mt-2">Baseline as of {formatDate(s.baseline.asOf)}. Source: {s.baseline.source}.</p>}
+            {s.baseline && <p className="text-[11px] text-[#3f4a42]/50 mt-2">Baseline: {formatDate(s.baseline.asOf)}. Source: {s.baseline.source}.</p>}
           </>
         )}
       </div>
 
       <div className={card}>
-        <h3 className="font-bold text-white mb-3">Seedbeds</h3>
+        <h3 className="font-bold text-[#173d2b] mb-3">Seedbeds</h3>
         {beds.error && <Problem text={beds.error} />}
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
-            <thead><tr className="border-b border-white/10"><th className={th}>Bed</th><th className={th}>Method</th><th className={th}>Manager</th><th className={th}>Capacity</th><th className={th}>Verified stock</th><th className={th}>Status</th></tr></thead>
-            <tbody className="divide-y divide-white/5 text-gray-200">
+            <thead><tr className="border-b border-[#173d2b]/10"><th className={th}>Bed</th><th className={th}>Method</th><th className={th}>Manager</th><th className={th}>Capacity</th><th className={th}>Verified stock</th><th className={th}>Status</th></tr></thead>
+            <tbody className="divide-y divide-[#173d2b]/5 text-[#252b27]">
               {beds.data && beds.data.length > 0 ? beds.data.map((b) => (
                 <tr key={b.id}>
-                  <td className={`${td} font-bold text-white`}>Bed {b.bedNumber}</td>
+                  <td className={`${td} font-bold text-[#173d2b]`}>Bed {b.bedNumber}</td>
                   <td className={td}>{b.method ?? '-'}</td>
-                  <td className={td}>{b.manager ?? <span className="text-gray-500">Not assigned</span>}</td>
+                  <td className={td}>{b.manager ?? <span className="text-[#3f4a42]/45">Unassigned</span>}</td>
                   <td className={td}>{b.capacityMax !== null ? `Up to ${fmt(b.capacityMax)}` : '-'}</td>
-                  <td className={td}>{b.currentStock !== null ? fmt(b.currentStock) : <span className="text-gray-500">None recorded</span>}</td>
+                  <td className={td}>{b.currentStock !== null ? fmt(b.currentStock) : <span className="text-[#3f4a42]/45">None recorded</span>}</td>
                   <td className={td}>{b.status}</td>
                 </tr>
               )) : <DashRow cols={6} />}
@@ -105,15 +105,15 @@ export function NurseryPanel({ refreshKey }: { refreshKey: number }) {
       </div>
 
       <div className={card}>
-        <h3 className="font-bold text-white mb-3">Cataloged species {species.data ? `(${species.data.count})` : ''}</h3>
+        <h3 className="font-bold text-[#173d2b] mb-3">Tree species {species.data ? `(${species.data.count})` : ''}</h3>
         {species.error && <Problem text={species.error} />}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
           {species.data?.species.length ? species.data.species.map((sp) => (
-            <div key={sp.id} className="rounded-lg bg-[#0b1c14] border border-white/5 px-3 py-2">
-              <div className="font-semibold text-white">{sp.name}</div>
-              <div className="italic text-gray-400">{sp.scientificName}</div>
+            <div key={sp.id} className="rounded-lg bg-[#f7f6f0] border border-[#173d2b]/8 px-3 py-2">
+              <div className="font-semibold text-[#173d2b]">{sp.name}</div>
+              <div className="italic text-[#3f4a42]/60">{sp.scientificName}</div>
             </div>
-          )) : <p className="text-gray-500">-</p>}
+          )) : <p className="text-[#3f4a42]/45">-</p>}
         </div>
       </div>
     </div>
@@ -131,22 +131,22 @@ export function DiaryPanel({ refreshKey }: { refreshKey: number }) {
     <div className={card}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div>
-          <h3 className="font-bold text-white">Keeper Diary</h3>
-          <p className="text-[11px] text-gray-400">The append-only log of confirmed events. Entries are never edited or deleted.</p>
+          <h3 className="font-bold text-[#173d2b]">Keeper Diary</h3>
+          <p className="text-[11px] text-[#3f4a42]/60">A permanent log of confirmed events.</p>
         </div>
         <form onSubmit={(e) => { e.preventDefault(); setSubmitted(query.trim()); }} className="flex gap-2">
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-gray-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 text-[#3f4a42]/40 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search the diary" aria-label="Search the diary" className={`${input} pl-8`} />
           </div>
-          <button className="px-3 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold">Search</button>
+          <button className="px-3 rounded-lg bg-[#173d2b] hover:bg-[#285b3c] text-[#f7f6f0] text-xs font-semibold">Search</button>
         </form>
       </div>
       {diary.error && <Problem text={diary.error} />}
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
-          <thead><tr className="border-b border-white/10"><th className={th}>When</th><th className={th}>Event</th><th className={th}>What</th><th className={th}>By</th></tr></thead>
-          <tbody className="divide-y divide-white/5 text-gray-200">
+          <thead><tr className="border-b border-[#173d2b]/10"><th className={th}>When</th><th className={th}>Event</th><th className={th}>What</th><th className={th}>By</th></tr></thead>
+          <tbody className="divide-y divide-[#173d2b]/5 text-[#252b27]">
             {diary.loading && !diary.data ? <DashRow cols={4} text="Loading..." /> : diary.data?.entries.length ? diary.data.entries.map((e) => (
               <tr key={e.id}>
                 <td className={`${td} whitespace-nowrap`}>{formatDate(e.ts)}</td>
@@ -154,7 +154,7 @@ export function DiaryPanel({ refreshKey }: { refreshKey: number }) {
                 <td className={td}>{e.description}</td>
                 <td className={td}>{e.actor ?? '-'}</td>
               </tr>
-            )) : <DashRow cols={4} text={submitted ? 'No verified Guardian records were found for this request.' : '-'} />}
+            )) : <DashRow cols={4} text={submitted ? 'No records found.' : '-'} />}
           </tbody>
         </table>
       </div>
@@ -189,35 +189,35 @@ export function RecordPanel({ onSaved }: { onSaved: () => void }) {
 
   return (
     <div className={card}>
-      <h3 className="font-bold text-white">Record an activity</h3>
-      <p className="text-[11px] text-gray-400 mb-3">Creates a draft. You review it and confirm before anything is saved. Using this form does not use a prompt.</p>
+      <h3 className="font-bold text-[#173d2b]">Record an activity</h3>
+      <p className="text-[11px] text-[#3f4a42]/60 mb-3">This creates a draft. Review it before saving. It does not use a prompt.</p>
       <form onSubmit={submit} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-        <label className="space-y-1"><span className="text-gray-300 font-semibold">Activity type</span>
+        <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">Activity type</span>
           <select required value={form.type} onChange={set('type')} className={`${input} w-full`}>
             <option value="">Choose...</option>
             {ACTIVITY_TYPE_KEYS.map((k) => <option key={k} value={k}>{ACTIVITY_TYPES[k].label}</option>)}
           </select>
         </label>
-        <label className="space-y-1"><span className="text-gray-300 font-semibold">Quantity (seedlings)</span>
+        <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">Quantity (seedlings)</span>
           <input type="number" min={1} required value={form.quantity} onChange={set('quantity')} className={`${input} w-full`} />
         </label>
-        <label className="space-y-1"><span className="text-gray-300 font-semibold">Date</span>
+        <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">Date</span>
           <input type="date" required value={form.date} onChange={set('date')} className={`${input} w-full`} />
         </label>
-        <label className="space-y-1"><span className="text-gray-300 font-semibold">Species (optional)</span>
+        <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">Species (optional)</span>
           <select value={form.species} onChange={set('species')} className={`${input} w-full`}>
             <option value="">Not specified</option>
             {species.data?.species.map((s) => <option key={s.id} value={s.name}>{s.name}</option>)}
           </select>
         </label>
-        <label className="space-y-1"><span className="text-gray-300 font-semibold">{type === 'transfer' ? 'From bed' : 'Seedbed'}{needs('seedbed') ? '' : ' (optional)'}</span>
+        <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">{type === 'transfer' ? 'From bed' : 'Seedbed'}{needs('seedbed') ? '' : ' (optional)'}</span>
           <select required={needs('seedbed')} value={form.seedbed} onChange={set('seedbed')} className={`${input} w-full`}>
             <option value="">Not specified</option>
             {beds.data?.map((b) => <option key={b.id} value={b.bedNumber}>Bed {b.bedNumber}</option>)}
           </select>
         </label>
         {type === 'transfer' && (
-          <label className="space-y-1"><span className="text-gray-300 font-semibold">To bed</span>
+          <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">To bed</span>
             <select required value={form.toSeedbed} onChange={set('toSeedbed')} className={`${input} w-full`}>
               <option value="">Choose...</option>
               {beds.data?.map((b) => <option key={b.id} value={b.bedNumber}>Bed {b.bedNumber}</option>)}
@@ -225,21 +225,21 @@ export function RecordPanel({ onSaved }: { onSaved: () => void }) {
           </label>
         )}
         {(type === 'dispatch' || type === 'out_planting') && (
-          <label className="space-y-1"><span className="text-gray-300 font-semibold">Destination</span>
+          <label className="space-y-1"><span className="text-[#3f4a42] font-semibold">Destination</span>
             <input required value={form.destination} onChange={set('destination')} maxLength={120} placeholder="School, buyer or planting site" className={`${input} w-full`} />
           </label>
         )}
-        <label className="space-y-1 sm:col-span-2 lg:col-span-3"><span className="text-gray-300 font-semibold">Notes (optional)</span>
+        <label className="space-y-1 sm:col-span-2 lg:col-span-3"><span className="text-[#3f4a42] font-semibold">Notes (optional)</span>
           <input value={form.notes} onChange={set('notes')} maxLength={500} className={`${input} w-full`} />
         </label>
         <div className="sm:col-span-2 lg:col-span-3">
-          <button disabled={busy} className="px-4 py-2 rounded-lg bg-[#e4c878] hover:bg-amber-300 text-neutral-950 font-bold disabled:opacity-50 flex items-center gap-1.5">
+          <button disabled={busy} className="px-4 py-2 rounded-lg bg-[#173d2b] hover:bg-[#285b3c] text-[#f7f6f0] font-bold disabled:opacity-50 flex items-center gap-1.5">
             {busy && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Review draft
           </button>
         </div>
       </form>
       {problem && <div className="mt-3"><Problem text={problem} /></div>}
-      {saved && <p className="mt-3 text-xs text-emerald-300 font-semibold">{saved}</p>}
+      {saved && <p className="mt-3 text-xs text-[#285b3c] font-semibold">{saved}</p>}
       {draft && (draft.status === 'pending' || draft.status === 'draft') && (
         <DraftCard
           draft={draft}
@@ -266,35 +266,35 @@ export function VerifyPanel({ refreshKey, onChanged }: { refreshKey: number; onC
 
   return (
     <div className={card}>
-      <h3 className="font-bold text-white">Verification queue</h3>
-      <p className="text-[11px] text-gray-400 mb-3">Confirmed records waiting for review. You cannot verify or reject a record you recorded yourself.</p>
+      <h3 className="font-bold text-[#173d2b]">Records to review</h3>
+      <p className="text-[11px] text-[#3f4a42]/60 mb-3">Confirmed records waiting for review. You cannot review your own record.</p>
       {records.error && <Problem text={records.error} />}
       <div className="space-y-2">
         {records.data?.records.length ? records.data.records.map((r) => {
           const own = r.recordedByYou === true;
           return (
-            <div key={r.id} className="rounded-xl bg-[#0b1c14] border border-white/10 p-3 text-xs space-y-2">
+            <div key={r.id} className="rounded-xl bg-[#f7f6f0] border border-[#173d2b]/10 p-3 text-xs space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <Status status={r.status} />
-                <span className="font-semibold text-white">{ACTIVITY_TYPES[r.type as ActivityType]?.label}: {fmt(r.quantity)} seedlings</span>
-                <span className="text-gray-400">{formatDate(r.date)}</span>
-                {r.species && <span className="text-gray-300">{r.species}</span>}
-                {r.seedbed && <span className="text-gray-300">Bed {r.seedbed}{r.toSeedbed ? ` to bed ${r.toSeedbed}` : ''}</span>}
-                {r.destination && <span className="text-gray-300">to {r.destination}</span>}
-                <span className="text-gray-400">by {r.recordedBy}</span>
-                {r.version > 1 && <span className="text-gray-400">version {r.version}</span>}
+                <span className="font-semibold text-[#173d2b]">{ACTIVITY_TYPES[r.type as ActivityType]?.label}: {fmt(r.quantity)} seedlings</span>
+                <span className="text-[#3f4a42]/60">{formatDate(r.date)}</span>
+                {r.species && <span className="text-[#3f4a42]">{r.species}</span>}
+                {r.seedbed && <span className="text-[#3f4a42]">Bed {r.seedbed}{r.toSeedbed ? ` to bed ${r.toSeedbed}` : ''}</span>}
+                {r.destination && <span className="text-[#3f4a42]">to {r.destination}</span>}
+                <span className="text-[#3f4a42]/60">by {r.recordedBy}</span>
+                {r.version > 1 && <span className="text-[#3f4a42]/60">version {r.version}</span>}
               </div>
-              {own ? <p className="text-amber-200">You recorded this, so another authorised person must review it.</p> : (
+              {own ? <p className="text-[#7a5f22]">Another person must review this record.</p> : (
                 <div className="flex flex-wrap items-center gap-2">
-                  <button onClick={() => review(r.id, 'verify')} className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Verify</button>
-                  <input value={reasons[r.id] ?? ''} onChange={(e) => setReasons((x) => ({ ...x, [r.id]: e.target.value }))} placeholder="Reason (required to reject)" className={`${input} flex-1 min-w-[160px]`} />
-                  <button onClick={() => review(r.id, 'reject')} className="px-2.5 py-1.5 rounded-lg border border-red-700 text-red-200 hover:bg-red-950 font-bold flex items-center gap-1"><X className="w-3.5 h-3.5" /> Reject</button>
+                  <button onClick={() => review(r.id, 'verify')} className="px-2.5 py-1.5 rounded-lg bg-[#285b3c] hover:bg-[#173d2b] text-white font-bold flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Verify</button>
+                  <input value={reasons[r.id] ?? ''} onChange={(e) => setReasons((x) => ({ ...x, [r.id]: e.target.value }))} placeholder="Reason to reject" className={`${input} flex-1 min-w-[160px]`} />
+                  <button onClick={() => review(r.id, 'reject')} className="px-2.5 py-1.5 rounded-lg border border-red-200 text-red-700 hover:bg-red-50 font-bold flex items-center gap-1"><X className="w-3.5 h-3.5" /> Reject</button>
                 </div>
               )}
               {msg[r.id] && <Problem text={msg[r.id]} />}
             </div>
           );
-        }) : <p className="text-xs text-gray-500 py-3 text-center">{records.loading ? 'Loading...' : 'No records are waiting for review.'}</p>}
+        }) : <p className="text-xs text-[#3f4a42]/45 py-3 text-center">{records.loading ? 'Loading...' : 'No records are waiting for review.'}</p>}
       </div>
     </div>
   );
@@ -308,16 +308,16 @@ export function AuditPanel({ refreshKey }: { refreshKey: number }) {
     <div className={card}>
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h3 className="font-bold text-white">Audit trail</h3>
-          <p className="text-[11px] text-gray-400">Every write, denial and review. Append-only.</p>
+          <h3 className="font-bold text-[#173d2b]">Audit log</h3>
+          <p className="text-[11px] text-[#3f4a42]/60">A permanent log of every action.</p>
         </div>
-        <button onClick={() => audit.reload()} className="p-2 rounded-lg hover:bg-white/10" aria-label="Refresh"><RefreshCw className="w-4 h-4" /></button>
+        <button onClick={() => audit.reload()} className="p-2 rounded-lg hover:bg-[#173d2b]/5 text-[#173d2b]" aria-label="Refresh"><RefreshCw className="w-4 h-4" /></button>
       </div>
       {audit.error && <Problem text={audit.error} />}
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
-          <thead><tr className="border-b border-white/10"><th className={th}>When</th><th className={th}>User</th><th className={th}>Tool</th><th className={th}>Result</th><th className={th}>Request</th><th className={th}>Channel</th></tr></thead>
-          <tbody className="divide-y divide-white/5 text-gray-200">
+          <thead><tr className="border-b border-[#173d2b]/10"><th className={th}>When</th><th className={th}>User</th><th className={th}>Tool</th><th className={th}>Result</th><th className={th}>Request</th><th className={th}>Channel</th></tr></thead>
+          <tbody className="divide-y divide-[#173d2b]/5 text-[#252b27]">
             {audit.data?.entries.length ? audit.data.entries.map((a) => (
               <tr key={a.id}>
                 <td className={`${td} whitespace-nowrap`}>{new Date(a.ts).toLocaleString('en-GB', { timeZone: 'Africa/Nairobi' })}</td>
@@ -360,27 +360,27 @@ export function TeamPanel({ myUserId }: { myUserId: string }) {
   return (
     <div className="space-y-4">
       <div className={card}>
-        <h3 className="font-bold text-white">Team and roles</h3>
-        <p className="text-[11px] text-gray-400 mb-3">New sign-ups start as Pending. Approve them by choosing a role. Seeded team members sign in once you set their email.</p>
+        <h3 className="font-bold text-[#173d2b]">Team and roles</h3>
+        <p className="text-[11px] text-[#3f4a42]/60 mb-3">New sign-ups start as Pending. Choose a role to approve them. Set an email for seeded members.</p>
         {msg && <div className="mb-2"><Problem text={msg} /></div>}
         {team.error && <Problem text={team.error} />}
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
-            <thead><tr className="border-b border-white/10"><th className={th}>Name</th><th className={th}>Email</th><th className={th}>Role</th><th className={th}>Access</th></tr></thead>
-            <tbody className="divide-y divide-white/5 text-gray-200">
+            <thead><tr className="border-b border-[#173d2b]/10"><th className={th}>Name</th><th className={th}>Email</th><th className={th}>Role</th><th className={th}>Access</th></tr></thead>
+            <tbody className="divide-y divide-[#173d2b]/5 text-[#252b27]">
               {team.data?.members.length ? team.data.members.map((m) => {
                 const me = m.id === myUserId;
                 return (
                   <tr key={m.id}>
                     <td className={td}>
-                      <div className="font-semibold text-white">{m.name}{me ? ' (you)' : ''}</div>
-                      {m.user_status === 'unclaimed' && <div className="text-[10px] text-amber-300">Has not signed in yet</div>}
+                      <div className="font-semibold text-[#173d2b]">{m.name}{me ? ' (you)' : ''}</div>
+                      {m.user_status === 'unclaimed' && <div className="text-[10px] text-[#7a5f22]">Not signed in yet</div>}
                     </td>
                     <td className={td}>
                       {m.user_status === 'unclaimed' && !m.email ? (
                         <form onSubmit={(e) => { e.preventDefault(); void update({ user_id: m.id, email: emails[m.id] }); }} className="flex gap-1">
                           <input type="email" required value={emails[m.id] ?? ''} onChange={(e) => setEmails((x) => ({ ...x, [m.id]: e.target.value }))} placeholder="Their Google email" className={`${input} w-44`} />
-                          <button className="px-2 rounded-lg bg-white/10 hover:bg-white/20 font-semibold">Set</button>
+                          <button className="px-2 rounded-lg bg-[#173d2b] hover:bg-[#285b3c] text-[#f7f6f0] font-semibold">Set</button>
                         </form>
                       ) : (m.email ?? '-')}
                     </td>
@@ -407,13 +407,13 @@ export function TeamPanel({ myUserId }: { myUserId: string }) {
       </div>
 
       <div className={card}>
-        <h3 className="font-bold text-white mb-3">Seedbed managers</h3>
+        <h3 className="font-bold text-[#173d2b] mb-3">Seedbed managers</h3>
         <div className="grid sm:grid-cols-2 gap-3 text-xs">
           {team.data?.seedbeds.map((b) => (
-            <label key={b.id} className="flex items-center justify-between gap-2 rounded-lg bg-[#0b1c14] border border-white/10 p-3">
-              <span className="font-semibold text-white">Bed {b.bedNumber}</span>
+            <label key={b.id} className="flex items-center justify-between gap-2 rounded-lg bg-[#f7f6f0] border border-[#173d2b]/10 p-3">
+              <span className="font-semibold text-[#173d2b]">Bed {b.bedNumber}</span>
               <select value={active.find((m) => m.name === b.manager)?.id ?? ''} onChange={(e) => assign(b.id, e.target.value)} className={input}>
-                <option value="">Not assigned</option>
+                <option value="">Unassigned</option>
                 {active.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
               </select>
             </label>

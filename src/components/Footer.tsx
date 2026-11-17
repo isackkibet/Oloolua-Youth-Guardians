@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { TreePine, MapPin, Mail, Phone, ExternalLink, Loader2 } from 'lucide-react';
+import { TreePine, MapPin, Mail, Phone, ExternalLink, Loader2, ArrowUpRight } from 'lucide-react';
 import { useMessageForm } from '@/lib/useMessageForm';
 import { Honeypot, FormFeedback } from './FormBits';
 
@@ -14,22 +14,28 @@ export default function Footer() {
   const newsletter = useMessageForm('newsletter');
 
   return (
-    <footer className="bg-[#07130d] border-t border-[#e4c878]/20 text-gray-300 pt-12 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-
-          {/* Col 1: About + newsletter */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <TreePine className="w-6 h-6 text-[#e4c878]" />
-              <span className="font-bold text-white text-lg tracking-tight">Oloolua Youth Guardians</span>
-            </div>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              Oloolua Forest Community Forest Association (CFA) Seedling User Group. Dedicated to indigenous tree seedling production, Oloolua forest restoration, and sustainable youth livelihoods.
+    <footer className="bg-[#173d2b] text-[#f7f6f0]">
+      <div className="max-w-8xl mx-auto container-px pt-16 pb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+          {/* Brand + newsletter */}
+          <div className="lg:col-span-4 space-y-6">
+            <Link href="/" className="flex items-center gap-3 group w-fit">
+              <span className="w-11 h-11 shrink-0 rounded-full border border-[#c3a66b]/40 flex items-center justify-center text-[#c3a66b]">
+                <TreePine className="w-5 h-5" strokeWidth={1.6} />
+              </span>
+              <span className="flex flex-col leading-none">
+                <span className="font-display text-xl font-semibold tracking-tight">Oloolua Youth Guardians</span>
+                <span className="text-[0.58rem] text-[#a5b89a] font-semibold tracking-[0.24em] uppercase mt-1.5">
+                  Community Forest Association
+                </span>
+              </span>
+            </Link>
+            <p className="text-sm text-[#f7f6f0]/65 leading-relaxed max-w-sm">
+              We grow native trees, restore Oloolua Forest and support youth livelihoods.
             </p>
-            <form onSubmit={newsletter.onSubmit} className="space-y-2 relative">
-              <label htmlFor="newsletter-email" className="text-[11px] font-bold uppercase tracking-wider text-[#e4c878]">
-                Stay Updated
+            <form onSubmit={newsletter.onSubmit} className="space-y-2.5 relative max-w-sm">
+              <label htmlFor="newsletter-email" className="block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#a5b89a]">
+                Newsletter
               </label>
               <Honeypot />
               <div className="flex gap-2">
@@ -39,12 +45,12 @@ export default function Footer() {
                   name="contact"
                   required
                   placeholder="Your email"
-                  className="flex-1 min-w-0 bg-[#0d2219] border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#e4c878]/60 placeholder-gray-600"
+                  className="flex-1 min-w-0 bg-transparent border-b border-[#f7f6f0]/25 px-1 py-2.5 text-sm text-[#f7f6f0] placeholder-[#f7f6f0]/45 focus:outline-none focus:border-[#c3a66b] transition-colors"
                 />
                 <button
                   type="submit"
                   disabled={newsletter.status === 'sending'}
-                  className="px-3 py-2 rounded-lg bg-[#e4c878] hover:bg-amber-300 disabled:opacity-60 text-neutral-950 font-bold text-xs transition-colors whitespace-nowrap flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-full border border-[#c3a66b]/50 text-[#c3a66b] hover:bg-[#c3a66b] hover:text-[#173d2b] disabled:opacity-60 text-xs font-semibold tracking-wide transition-colors whitespace-nowrap flex items-center gap-1.5"
                 >
                   {newsletter.status === 'sending' && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
                   Subscribe
@@ -54,54 +60,77 @@ export default function Footer() {
             </form>
           </div>
 
-          {/* Col 2: Navigation */}
-          <div>
-            <h4 className="text-[#e4c878] font-bold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link href="/" className="hover:text-white transition-colors">Home Page</Link></li>
-              <li><Link href="/about" className="hover:text-white transition-colors">About Guardians CFA</Link></li>
-              <li><Link href="/seedlings" className="hover:text-white transition-colors">Tree Nursery & Seedbeds</Link></li>
-              <li><Link href="/activities" className="hover:text-white transition-colors">Conservation Activities</Link></li>
-              <li><Link href="/projects" className="hover:text-white transition-colors">Art in Nature & Rock Mural</Link></li>
-              <li><Link href="/beekeeping" className="hover:text-white transition-colors">Apiculture & Livelihoods</Link></li>
-              <li><Link href="/workshops" className="hover:text-white transition-colors">Community Workshops</Link></li>
+          {/* Explore */}
+          <div className="lg:col-span-2 lg:col-start-6">
+            <h4 className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#a5b89a] mb-5">Explore</h4>
+            <ul className="space-y-3 text-sm">
+              {[
+                ['Home', '/'],
+                ['About Us', '/about'],
+                ['Tree Nursery', '/seedlings'],
+                ['Activities', '/activities'],
+                ['Projects', '/projects'],
+                ['Beekeeping', '/beekeeping'],
+                ['Workshops', '/workshops'],
+              ].map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-[#f7f6f0]/65 hover:text-[#f7f6f0] transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 3: Kai ledger */}
-          <div>
-            <h4 className="text-[#e4c878] font-bold text-sm uppercase tracking-wider mb-4">Guardian Hub</h4>
-            <ul className="space-y-2 text-xs">
-              <li><Link href="/portal" className="hover:text-white transition-colors">AI Guardian</Link></li>
-              <li><Link href="/portal?tab=nursery" className="hover:text-white transition-colors">Nursery Records</Link></li>
-              <li><Link href="/portal?tab=diary" className="hover:text-white transition-colors">Keeper Diary</Link></li>
-              <li><Link href="/portal?tab=record" className="hover:text-white transition-colors">Record an Activity</Link></li>
-              <li><Link href="/portal?tab=verify" className="hover:text-white transition-colors">Verification Queue</Link></li>
+          {/* Guardian Hub */}
+          <div className="lg:col-span-2">
+            <h4 className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#a5b89a] mb-5">Guardian Hub</h4>
+            <ul className="space-y-3 text-sm">
+              {[
+                ['AI Guardian', '/portal'],
+                ['Nursery', '/portal?tab=nursery'],
+                ['Keeper Diary', '/portal?tab=diary'],
+                ['Record Activity', '/portal?tab=record'],
+                ['Verification', '/portal?tab=verify'],
+              ].map(([label, href]) => (
+                <li key={href}>
+                  <Link href={href} className="text-[#f7f6f0]/65 hover:text-[#f7f6f0] transition-colors">
+                    {label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 4: Contact */}
-          <div className="space-y-3">
-            <h4 className="text-[#e4c878] font-bold text-sm uppercase tracking-wider mb-4">Contact CFA</h4>
-            <div className="flex items-start gap-2 text-xs text-gray-300">
-              <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+          {/* Contact */}
+          <div className="lg:col-span-3 space-y-3.5">
+            <h4 className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#a5b89a] mb-5">Contact Us</h4>
+            <div className="flex items-start gap-2.5 text-sm text-[#f7f6f0]/70">
+              <MapPin className="w-4 h-4 text-[#c3a66b] shrink-0 mt-0.5" strokeWidth={1.7} />
               <span>Oloolua Forest Station, Kajiado North, Kenya</span>
             </div>
             {PHONES.map((phone) => (
-              <a key={phone} href={`tel:${phone}`} className="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition-colors">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+              <a
+                key={phone}
+                href={`tel:${phone}`}
+                className="flex items-center gap-2.5 text-sm text-[#f7f6f0]/70 hover:text-[#f7f6f0] transition-colors"
+              >
+                <Phone className="w-4 h-4 text-[#c3a66b] shrink-0" strokeWidth={1.7} />
                 <span>{phone}</span>
               </a>
             ))}
-            <a href={`mailto:${EMAIL}`} className="flex items-center gap-2 text-xs text-gray-300 hover:text-white transition-colors break-all">
-              <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
+            <a
+              href={`mailto:${EMAIL}`}
+              className="flex items-center gap-2.5 text-sm text-[#f7f6f0]/70 hover:text-[#f7f6f0] transition-colors break-all"
+            >
+              <Mail className="w-4 h-4 text-[#c3a66b] shrink-0" strokeWidth={1.7} />
               <span>{EMAIL}</span>
             </a>
             <a
               href={INSTAGRAM}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-1 px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-700 to-pink-600 text-white font-semibold text-xs hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 mt-2 px-4 py-2 rounded-full border border-[#f7f6f0]/25 text-[#f7f6f0]/80 text-xs font-semibold hover:border-[#c3a66b] hover:text-[#c3a66b] transition-colors"
             >
               Instagram
               <ExternalLink className="w-3.5 h-3.5" />
@@ -109,14 +138,17 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-6 border-t border-gray-800 flex flex-wrap justify-between items-center text-xs text-gray-500 gap-4">
+        <div className="mt-14 pt-6 border-t border-[#f7f6f0]/12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs text-[#f7f6f0]/45">
           <div>
-            Ac {new Date().getFullYear()} Oloolua Forest Youth Guardians CFA.
+            &copy; {new Date().getFullYear()} Oloolua Forest Youth Guardians CFA. All rights reserved.
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/portal" className="hover:text-gray-300 transition-colors">Sign in</Link>
-            <span>·</span>
-            <Link href="/inbox" className="hover:text-gray-300 transition-colors">Team Inbox</Link>
+          <div className="flex items-center gap-5">
+            <Link href="/portal" className="hover:text-[#f7f6f0] transition-colors inline-flex items-center gap-1">
+              Sign in <ArrowUpRight className="w-3 h-3" />
+            </Link>
+            <Link href="/inbox" className="hover:text-[#f7f6f0] transition-colors">
+              Team Inbox
+            </Link>
           </div>
         </div>
       </div>

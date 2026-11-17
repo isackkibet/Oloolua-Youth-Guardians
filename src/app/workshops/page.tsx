@@ -26,48 +26,44 @@ export default function WorkshopsPage() {
   return (
     <PageLayout
       title="Community Workshops"
-      subtitle="Empowering the local community through environmental education and hands-on training"
+      subtitle="We train local people in conservation and green skills."
+      eyebrow="Workshops"
       bgImage="/assets/images/workshop.jpg"
     >
-      {/* Content Section */}
-      <section style={{ padding: '3rem 1.5rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <h2 style={{ color: '#e4c878', fontSize: '1.7rem', fontWeight: 800 }}>Environmental Education &amp; Outreach</h2>
-          <p style={{ fontSize: '1.1rem', maxWidth: 800, margin: '1rem auto', color: '#d0e8d8', lineHeight: 1.8 }}>
-            Our community workshops are at the heart of our mission. We believe that conservation starts with education. Through these interactive sessions, we train youth and community members on sustainable forestry, biodiversity tracking, and green enterprise skills. Check out the highlights from our recent sessions below.
+      <section className="py-16 sm:py-20">
+        <div className="max-w-3xl mx-auto container-px text-center">
+          <span className="eyebrow justify-center">Training</span>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">Learning for a greener future</h2>
+          <p className="mt-5 text-base text-[#3f4a42] leading-relaxed">
+            Our workshops teach tree care, biodiversity and green business skills.
           </p>
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <section style={{ padding: '2rem 1.5rem 4rem', background: 'rgba(10,25,16,0.5)' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: 20,
-          }}>
-            {WORKSHOP_IMAGES.map((imgName) => (
-              <div
-                key={imgName}
-                style={{
-                  borderRadius: 10,
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-                  aspectRatio: '4/3',
-                  background: '#122b1f',
-                  transition: 'transform 0.3s ease',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-5px)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
-              >
-                <img
-                  src={`/assets/images/${imgName}`}
-                  alt="Community Workshop Photo"
-                  loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              </div>
+      <section className="pb-20 sm:pb-24 bg-[#f2f0e8] border-t border-[#173d2b]/10">
+        <div className="max-w-7xl mx-auto container-px pt-14">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <div>
+              <span className="eyebrow">Workshop Photos</span>
+              <h2 className="mt-3 font-display text-2xl sm:text-3xl text-[#173d2b]">Our workshops in pictures</h2>
+            </div>
+            <span className="hidden sm:block text-[0.68rem] uppercase tracking-[0.16em] text-[#285b3c]/60">
+              {WORKSHOP_IMAGES.length} photos
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+            {WORKSHOP_IMAGES.map((imgName, i) => (
+              <figure key={imgName} className="group overflow-hidden bg-[#e6e3d8] rounded-[2px]">
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={`/assets/images/${imgName}`}
+                    alt={`Community workshop photograph ${i + 1}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
+                  />
+                </div>
+              </figure>
             ))}
           </div>
         </div>

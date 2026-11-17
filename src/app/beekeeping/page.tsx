@@ -7,48 +7,48 @@ const BEE_IMAGES = ['bee1.jpeg', 'bee2.jpeg', 'bee3.jpeg', 'bee5.jpeg', 'bee6.jp
 export default function BeekeepingPage() {
   return (
     <PageLayout
-      title="Beekeeping Initiative"
-      subtitle="Promoting sustainable apiculture for biodiversity and community livelihood"
+      title="Beekeeping"
+      subtitle="We keep bees to help the forest and local livelihoods."
+      eyebrow="Beekeeping"
+      bgImage="/assets/images/bee1.jpeg"
     >
-      {/* Content Section */}
-      <section style={{ padding: '3rem 1.5rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 960, margin: '0 auto' }}>
-          <h2 style={{ color: '#e4c878', fontSize: '1.7rem', fontWeight: 800 }}>Sustainable Apiculture in Oloolua</h2>
-          <p style={{ fontSize: '1.1rem', maxWidth: 800, margin: '1rem auto', color: '#d0e8d8', lineHeight: 1.8 }}>
-            Our beekeeping initiative aims to introduce sustainable honey production while enhancing the pollination of indigenous flora. This helps preserve the forest ecosystem while providing alternative income streams for our community members.
+      <section className="py-16 sm:py-20">
+        <div className="max-w-3xl mx-auto container-px text-center">
+          <span className="eyebrow justify-center">Our Apiary</span>
+          <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">Bees help the forest</h2>
+          <p className="mt-5 text-base text-[#3f4a42] leading-relaxed">
+            Our hives support pollination and give local families extra income.
           </p>
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <section style={{ padding: '2rem 1.5rem 4rem', background: 'rgba(10,25,16,0.5)' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: 20,
-          }}>
-            {BEE_IMAGES.map((imgName) => (
-              <div
+      <section className="pb-20 sm:pb-24 bg-[#f2f0e8] border-t border-[#173d2b]/10">
+        <div className="max-w-7xl mx-auto container-px pt-14">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <div>
+              <span className="eyebrow">Our Apiary</span>
+              <h2 className="mt-3 font-display text-2xl sm:text-3xl text-[#173d2b]">Our beekeeping work</h2>
+            </div>
+            <span className="hidden sm:block text-[0.68rem] uppercase tracking-[0.16em] text-[#285b3c]/60">
+              {BEE_IMAGES.length} photos
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {BEE_IMAGES.map((imgName, i) => (
+              <figure
                 key={imgName}
-                style={{
-                  borderRadius: 10,
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-                  aspectRatio: '4/3',
-                  background: '#122b1f',
-                  transition: 'transform 0.3s ease',
-                }}
-                onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) => (e.currentTarget.style.transform = 'translateY(-5px)')}
-                onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) => (e.currentTarget.style.transform = 'translateY(0)')}
+                className="group overflow-hidden bg-[#e6e3d8] rounded-[2px]"
               >
-                <img
-                  src={`/assets/images/${imgName}`}
-                  alt="Beekeeping Activity"
-                  loading="lazy"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                />
-              </div>
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img
+                    src={`/assets/images/${imgName}`}
+                    alt={`Beekeeping activity at Oloolua Forest ${i + 1}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                  />
+                </div>
+              </figure>
             ))}
           </div>
         </div>

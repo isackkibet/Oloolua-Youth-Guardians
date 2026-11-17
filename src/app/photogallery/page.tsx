@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import Link from 'next/link';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import PageLayout from '@/components/PageLayout';
+import { X, ChevronLeft, ChevronRight, Expand } from 'lucide-react';
 
 // Exact image list from the original photogallery.html JS array
 const IMAGE_PATHS = [
@@ -13,33 +14,79 @@ const IMAGE_PATHS = [
   "future1.jpeg","future11.jpeg","future12.jpeg","future13.jpeg","future14.jpeg","future15.jpeg","future16.jpeg","future2.jpeg","future4.jpeg","future5.jpeg","future6.jpeg","future7.jpeg","future8.jpeg","future9.jpeg",
 ];
 
+const CATEGORIES = [
+  { id: 'all', label: 'All Photographs' },
+  { id: 'activities', label: 'Activities' },
+  { id: 'tours', label: 'Forest Tours' },
+  { id: 'field', label: 'Field Work' },
+  { id: 'forest', label: 'The Forest' },
+  { id: 'species', label: 'Tree Species' },
+  { id: 'future', label: 'Future Plans' },
+] as const;
+
+type CategoryId = typeof CATEGORIES[number]['id'];
+
+function categoryFor(file: string): Exclude<CategoryId, 'all'> {
+  if (file.startsWith('act')) return 'activities';
+  if (file.startsWith('tur')) return 'tours';
+  if (file.startsWith('fin')) return 'field';
+  if (file.startsWith('gal')) return 'forest';
+  if (file.startsWith('future')) return 'future';
+  return 'species';
+}
+
 export default function PhotoGalleryPage() {
-  const [current, setCurrent] = useState(0);
-  const total = IMAGE_PATHS.length;
+  const [active, setActive] = useState<CategoryId>('all');
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
 
-  const next = useCallback(() => setCurrent(i => (i + 1) % total), [total]);
-  const prev = useCallback(() => setCurrent(i => (i - 1 + total) % total), [total]);
+  const photos = useMemo(
+    () => IMAGE_PATHS.map((file, index) => ({ file, index, category: categoryFor(file) })),
+    []
+  );
 
-  // Keyboard: arrows to browse, Home/End to jump to the first/last photo.
+  const filtered = useMemo(
+    () => (active === 'all' ? photos : photos.filter(p => p.category === active)),
+    [active, photos]
+  );
+
+  const total = filtered.length;
+  const current = lightbox !== null ? filtered[lightbox] : null;
+
+  const close = useCallback(() => setLightbox(null), []);
+  const next = useCallback(() => setLightbox(i => (i === null ? i : (i + 1) % total)), [total]);
+  const prev = useCallback(() => setLightbox(i => (i === null ? i : (i - 1 + total) % total)), [total]);
+
+  // Lock page scroll while the lightbox is open.
   useEffect(() => {
+    if (lightbox === null) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previous; };
+  }, [lightbox]);
+
+  // Keyboard: arrows browse, Home/End jump, Escape closes.
+  useEffect(() => {
+    if (lightbox === null) return;
     const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft') prev();
-      if (e.key === 'Home') setCurrent(0);
-      if (e.key === 'End') setCurrent(total - 1);
+      if (e.key === 'Home') setLightbox(0);
+      if (e.key === 'End') setLightbox(total - 1);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [next, prev, total]);
+  }, [lightbox, next, prev, total, close]);
 
   // Warm the cache for both neighbours so the next tap or swipe is instant.
   useEffect(() => {
+    if (lightbox === null) return;
     for (const offset of [1, -1]) {
       const img = new window.Image();
-      img.src = `/assets/images/${IMAGE_PATHS[(current + offset + total) % total]}`;
+      img.src = `/assets/images/${filtered[(lightbox + offset + total) % total].file}`;
     }
-  }, [current, total]);
+  }, [lightbox, filtered, total]);
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -54,56 +101,130 @@ export default function PhotoGalleryPage() {
   };
 
   return (
-    <div
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      style={{ background: '#000', height: '100vh', width: '100%', overflow: 'hidden', position: 'relative' }}
+    <PageLayout
+      title="Photo Gallery"
+      subtitle="Photos of the forest and the people who care for it."
+      eyebrow="Photo Gallery"
+      bgImage="/assets/images/gal4.jpeg"
     >
-      {/* Back button */}
-      <Link
-        href="/"
-        style={{
-          position: 'fixed', top: 30, left: 30, zIndex: 1001,
-          color: 'white', textDecoration: 'none',
-          background: 'rgba(0,0,0,0.6)', padding: '10px 20px',
-          borderRadius: 30, fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 10,
-          transition: 'background 0.3s',
-        }}
-      >
-        ← Back to Home
-      </Link>
-
-      {/* Nav controls */}
-      <div style={{ position: 'fixed', top: '50%', width: '100%', display: 'flex', justifyContent: 'space-between', padding: '0 20px', pointerEvents: 'none', zIndex: 1000, transform: 'translateY(-50%)', boxSizing: 'border-box' }}>
-        <button
-          onClick={prev}
-          aria-label="Previous photo"
-          style={{ pointerEvents: 'auto', color: 'rgba(255,255,255,0.7)', fontSize: '2rem', cursor: 'pointer', background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', width: 60, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s' }}
-        >‹</button>
-        <button
-          onClick={next}
-          aria-label="Next photo"
-          style={{ pointerEvents: 'auto', color: 'rgba(255,255,255,0.7)', fontSize: '2rem', cursor: 'pointer', background: 'rgba(0,0,0,0.3)', border: 'none', borderRadius: '50%', width: 60, height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s' }}
-        >›</button>
+      {/* Category filter bar */}
+      <div className="sticky top-[76px] z-30 bg-[#f7f6f0]/95 backdrop-blur border-b border-[#173d2b]/10">
+        <div className="max-w-8xl mx-auto container-px">
+          <div className="flex items-center gap-2 overflow-x-auto py-3.5 dark-scroll">
+            {CATEGORIES.map(cat => {
+              const count = cat.id === 'all' ? photos.length : photos.filter(p => p.category === cat.id).length;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => { setActive(cat.id); setLightbox(null); }}
+                  className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-semibold tracking-wide transition-colors ${
+                    active === cat.id
+                      ? 'bg-[#173d2b] text-[#f7f6f0]'
+                      : 'bg-transparent text-[#285b3c] border border-[#173d2b]/15 hover:border-[#285b3c]'
+                  }`}
+                >
+                  {cat.label}
+                  <span className={`ml-2 text-[0.62rem] ${active === cat.id ? 'text-[#c3a66b]' : 'text-[#285b3c]/55'}`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* Current slide */}
-      <div style={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img
-          src={`/assets/images/${IMAGE_PATHS[current]}`}
-          alt={`Oloolua Forest photo ${current + 1} of ${total}`}
-          style={{ maxWidth: '95%', maxHeight: '90vh', objectFit: 'contain', boxShadow: '0 0 50px rgba(0,0,0,0.5)', borderRadius: 8, background: '#111' }}
-        />
-      </div>
+      <section className="py-12 sm:py-16">
+        <div className="max-w-8xl mx-auto container-px">
+          <div className="flex items-baseline justify-between gap-4 mb-8">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#285b3c]/70" aria-live="polite">
+              {total} photos
+            </p>
+            <p className="hidden sm:block text-[0.68rem] uppercase tracking-[0.14em] text-[#3f4a42]/45">
+              Tap an image to open it
+            </p>
+          </div>
 
-      {/* Counter */}
-      <div style={{
-        position: 'fixed', bottom: 30, left: '50%', transform: 'translateX(-50%)',
-        color: 'white', background: 'rgba(0,0,0,0.6)', padding: '8px 20px', borderRadius: 30, backdropFilter: 'blur(5px)',
-        fontFamily: 'Roboto, sans-serif', zIndex: 1000,
-      }}>
-        <span aria-live="polite">{current + 1} / {total}</span>
-      </div>
-    </div>
+          <div className="columns-2 sm:columns-3 xl:columns-4 gap-4">
+            {filtered.map((photo, i) => (
+              <button
+                key={photo.file}
+                onClick={() => setLightbox(i)}
+                className="group relative block w-full mb-4 break-inside-avoid overflow-hidden bg-[#e6e3d8] rounded-[2px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c3a66b]"
+                aria-label={`Open photo ${i + 1} of ${total}`}
+              >
+                <img
+                  src={`/assets/images/${photo.file}`}
+                  alt={`Oloolua Forest photograph ${i + 1}`}
+                  loading="lazy"
+                  className="w-full h-auto block transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                />
+                <span className="absolute inset-0 bg-[#0f2a1d]/0 group-hover:bg-[#0f2a1d]/25 transition-colors duration-300" />
+                <span className="absolute bottom-2 right-2 flex items-center justify-center w-8 h-8 rounded-full bg-[#f7f6f0]/90 text-[#173d2b] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Expand size={14} strokeWidth={1.8} />
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {current && (
+        <div
+          className="fixed inset-0 z-[100] bg-[#0b1a12]/97 flex flex-col"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Photo viewer"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 text-[#f7f6f0] shrink-0">
+            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#f7f6f0]/60" aria-live="polite">
+              {lightbox! + 1} / {total}
+            </span>
+            <button
+              onClick={close}
+              aria-label="Close photo viewer"
+              className="flex items-center gap-2 px-3 py-2 rounded-full border border-[#f7f6f0]/20 text-[#f7f6f0]/80 hover:text-[#c3a66b] hover:border-[#c3a66b]/50 transition-colors"
+            >
+              <X size={18} strokeWidth={1.6} />
+              <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] hidden sm:inline">Close</span>
+            </button>
+          </div>
+
+          <div className="relative flex-1 min-h-0 flex items-center justify-center px-3 sm:px-16">
+            <button
+              onClick={prev}
+              aria-label="Previous photo"
+              className="absolute left-2 sm:left-5 z-10 flex items-center justify-center w-11 h-11 rounded-full border border-[#f7f6f0]/20 text-[#f7f6f0]/75 hover:text-[#c3a66b] hover:border-[#c3a66b]/50 transition-colors"
+            >
+              <ChevronLeft size={22} strokeWidth={1.5} />
+            </button>
+
+            <img
+              key={current.file}
+              src={`/assets/images/${current.file}`}
+              alt={`Oloolua Forest photograph ${lightbox! + 1} of ${total}`}
+              className="max-w-full max-h-full object-contain select-none"
+            />
+
+            <button
+              onClick={next}
+              aria-label="Next photo"
+              className="absolute right-2 sm:right-5 z-10 flex items-center justify-center w-11 h-11 rounded-full border border-[#f7f6f0]/20 text-[#f7f6f0]/75 hover:text-[#c3a66b] hover:border-[#c3a66b]/50 transition-colors"
+            >
+              <ChevronRight size={22} strokeWidth={1.5} />
+            </button>
+          </div>
+
+          <div className="shrink-0 px-4 sm:px-6 py-4 text-center">
+            <span className="text-[0.6rem] uppercase tracking-[0.2em] text-[#f7f6f0]/40">
+              Oloolua Youth Guardians · Photo Gallery
+            </span>
+          </div>
+        </div>
+      )}
+    </PageLayout>
   );
 }

@@ -54,7 +54,7 @@ export function GuardianAuthProvider({ needsSession, onSessionCreated, children 
       appId={appId}
       config={{
         loginMethodsAndOrder: { primary: ['google', 'email'] },
-        appearance: { theme: 'dark', accentColor: '#10b981' },
+        appearance: { theme: 'light', accentColor: '#285b3c' },
         embeddedWallets: { ethereum: { createOnLogin: 'off' } },
       }}
     >

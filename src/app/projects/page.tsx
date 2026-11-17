@@ -1,4 +1,5 @@
 import PageLayout from '@/components/PageLayout';
+import Image from 'next/image';
 import {
   Satellite, Coins, Sprout, Database, TrendingUp, Hexagon, Palette,
   Globe, Target, Link2, Microscope, ShieldCheck, ClipboardList, Smartphone,
@@ -7,36 +8,36 @@ import {
 
 const ICRAF_CARDS: { icon: LucideIcon; title: string; items: string[] }[] = [
   {
-    icon: Sprout, title: 'Agroforestry Models',
-    items: ['Climate-resilient species selection', 'Advanced soil restoration strategies', 'Biodiversity enhancement planning'],
+    icon: Sprout, title: 'Agroforestry',
+    items: ['Choose climate-smart trees', 'Restore soil', 'Support biodiversity'],
   },
   {
-    icon: Database, title: 'Data Integration',
-    items: ['Predictive tree growth models', 'Accurate carbon sequestration estimates', 'Comprehensive land-use data processing'],
+    icon: Database, title: 'Data',
+    items: ['Model tree growth', 'Estimate carbon', 'Map land use'],
   },
   {
-    icon: TrendingUp, title: 'Value Creation',
-    items: ['Scientific Data + Field Data', '= Verified Impact Assets', 'Attracting ESG and Impact Investors'],
+    icon: TrendingUp, title: 'Value',
+    items: ['Science plus field data', 'Builds trusted impact records', 'Attracts ESG investors'],
   },
 ];
 
-const REGEN_CARDS: { icon: LucideIcon; title: string; color: string; desc: string; items: { label: string; val: string }[] }[] = [
+const REGEN_CARDS: { icon: LucideIcon; title: string; accent: string; desc: string; items: { label: string; val: string }[] }[] = [
   {
-    icon: Hexagon, title: 'Beekeeping Initiative', color: '#fca311',
-    desc: 'Integrated with reforestation to create a self-reinforcing ecological system. "Helping bees help us."',
+    icon: Hexagon, title: 'Beekeeping', accent: '#c3a66b',
+    desc: 'Bees help the forest, and honey helps the community.',
     items: [
-      { label: 'Ecosystem', val: 'Enhances pollination and forest regeneration.' },
-      { label: 'Economy', val: 'Youth harvest honey and beeswax.' },
-      { label: 'Blockchain', val: 'Tokenizing honey batches to trace origins back to the specific forest zones.' },
+      { label: 'Ecosystem', val: 'Bees pollinate trees.' },
+      { label: 'Economy', val: 'Youth earn from honey and wax.' },
+      { label: 'Records', val: 'Honey batches can be traced.' },
     ],
   },
   {
-    icon: Palette, title: 'Arts in Nature', color: '#9b5de5',
-    desc: 'Transforming conservation into a cultural experience. Artists become storytellers of the ecosystem.',
+    icon: Palette, title: 'Arts in Nature', accent: '#285b3c',
+    desc: 'Art helps people connect with the forest.',
     items: [
-      { label: 'Creative', val: 'Forest murals and sculpture installations.' },
-      { label: 'Data-Linked', val: 'Art connected to specific tree clusters.' },
-      { label: 'Blockchain', val: 'Minting Art NFTs embedded with real environmental metrics.' },
+      { label: 'Creative', val: 'Murals and sculptures.' },
+      { label: 'Data-Linked', val: 'Art linked to tree groups.' },
+      { label: 'Records', val: 'Digital art with real impact data.' },
     ],
   },
 ];
@@ -53,164 +54,212 @@ export default function ProjectsPage() {
   return (
     <PageLayout showHeader={false}>
       {/* HERO */}
-      <div style={{
-        background: `linear-gradient(rgba(11,46,20,0.85), rgba(11,46,20,0.95)), url('/assets/images/forest5.jpeg') center/cover`,
-        color: 'white', padding: '8rem 2rem 4rem', textAlign: 'center',
-      }}>
-        <div style={{ display: 'inline-block', background: 'rgba(232,201,106,0.15)', color: '#e8c96a', border: '1px solid #e8c96a', padding: '0.5rem 1.5rem', borderRadius: 50, fontSize: '0.85rem', fontWeight: 600, letterSpacing: 2, textTransform: 'uppercase', marginBottom: '1.5rem' }}>
-          Digital Conservation Ecosystem
+      <section className="relative bg-[#173d2b] text-[#f7f6f0] overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="/assets/images/forest5.jpeg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0f2a1d]/92 via-[#0f2a1d]/70 to-[#0f2a1d]/25" />
         </div>
-        <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 700, lineHeight: 1.1, marginBottom: '1.5rem' }}>
-          Data-Driven, Blockchain-Enabled<br />
-          <em style={{ color: '#e8c96a', fontStyle: 'italic' }}>Conservation</em>
-        </h1>
-        <p style={{ maxWidth: 800, margin: '0 auto', fontSize: '1.2rem', opacity: 0.9, fontWeight: 300 }}>
-          Transforming environmental stewardship into a transparent, scalable, and economically viable model. We convert conservation actions into verified data, tokenized assets, and true economic value.
-        </p>
-      </div>
+        <div className="relative max-w-8xl mx-auto container-px py-24 sm:py-32">
+          <div className="max-w-3xl">
+            <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#c3a66b]/40 text-[#c3a66b] text-[0.62rem] font-semibold tracking-[0.2em] uppercase">
+              Our Projects
+            </span>
+            <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-[3.9rem] leading-[1.04] font-medium">
+              Conservation we can <em className="italic text-[#c3a66b]">measure and trust</em>
+            </h1>
+            <p className="mt-6 text-base sm:text-lg text-[#f7f6f0]/70 leading-relaxed max-w-2xl font-light">
+              We turn conservation work into clear data, trusted records and real value.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Framework Bar */}
-      <div style={{ background: '#174823', padding: '2rem', display: 'flex', justifyContent: 'center', gap: '4rem', flexWrap: 'wrap', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-        {([
-          [Globe, 'ESG Aligned'],
-          [Target, 'SDG Goals'],
-          [Link2, 'Hedera Guardian'],
-          [Microscope, 'Science-Backed'],
-        ] as [LucideIcon, string][]).map(([Icon, label]) => (
-          <div key={label} style={{ textAlign: 'center', color: 'white' }}>
-            <Icon size={28} style={{ marginBottom: '0.5rem' }} />
-            <div><span style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.8 }}>{label}</span></div>
-          </div>
-        ))}
-      </div>
-
-      {/* JAZA MITI */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '4rem 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
-          <div>
-            <span style={{ color: '#e4c878', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem' }}>Flagship Initiative</span>
-            <h3 style={{ fontSize: '2rem', color: '#f6f2e7', fontWeight: 700, margin: '0.75rem 0 1rem' }}>Jaza Miti: Tokenized Tree Planting</h3>
-            <p style={{ color: '#c3dccf', marginBottom: '1.5rem', fontSize: '1.05rem', lineHeight: 1.7 }}>
-              Jaza Miti goes beyond traditional tree planting by creating measurable, verifiable, and monetizable environmental impact. We solve the lack of transparency in traditional reforestation by assigning local youth as guardians and geo-tagging every sapling.
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {([
-                { icon: Satellite, title: 'Data Capture', desc: 'We log GPS coordinates, species types, growth metrics, and survival rates into structured datasets.' },
-                { icon: Coins, title: 'Tokenization', desc: 'Each living tree is minted as a Conservation NFT on Hedera, serving as a transparent digital asset representing real-world ecological impact.' },
-              ] as { icon: LucideIcon; title: string; desc: string }[]).map(({ icon: Icon, title, desc }) => (
-                <li key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.2rem', background: 'white', padding: '1.2rem', borderRadius: 12, boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid #daebd9' }}>
-                  <Icon size={24} style={{ color: '#2a6040', flexShrink: 0 }} />
-                  <div>
-                    <h4 style={{ color: '#0b2e14', marginBottom: '0.3rem', fontSize: '1.05rem' }}>{title}</h4>
-                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#334a34' }}>{desc}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.15)' }}>
-            <img src="/assets/images/seedling1.jpeg" alt="Tree planting" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', minHeight: 300 }} />
-          </div>
-        </div>
-      </div>
-
-      {/* ICRAF / CIFOR */}
-      <div style={{ background: 'white', borderRadius: 40, margin: '0 2rem 2rem', padding: '4rem 2rem', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span style={{ color: '#2a6040', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem', display: 'block', marginBottom: '0.5rem' }}>Scientific Credibility</span>
-          <h2 style={{ fontSize: '2.5rem', color: '#0b2e14', fontWeight: 700 }}>ICRAF / CIFOR Integration</h2>
-          <p style={{ maxWidth: 600, margin: '0 auto', color: '#617060' }}>Grounding our conservation model in rigorous scientific research to ensure ecological accuracy and prepare for global green finance markets.</p>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '2rem' }}>
-          {ICRAF_CARDS.map(({ icon: Icon, title, items }) => (
-            <div key={title} style={{ background: 'white', padding: '2rem', borderRadius: 20, border: '1px solid #daebd9', boxShadow: '0 10px 30px rgba(11,46,20,0.05)', borderTop: '4px solid #e8c96a', transition: 'transform 0.3s' }}>
-              <Icon size={36} style={{ color: '#2a6040', marginBottom: '1rem' }} />
-              <h4 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: '#0b2e14', fontWeight: 700 }}>{title}</h4>
-              <ul style={{ paddingLeft: '1.2rem', color: '#334a34', lineHeight: 1.8 }}>
-                {items.map(i => <li key={i}>{i}</li>)}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Regenerative Strategies */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '4rem 2rem' }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <span style={{ color: '#e4c878', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem', display: 'block', marginBottom: '0.5rem' }}>Holistic Approach</span>
-          <h2 style={{ fontSize: '2.5rem', color: '#f6f2e7', fontWeight: 700 }}>Regenerative Ecosystem Strategies</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-          {REGEN_CARDS.map(({ icon: Icon, title, color, desc, items }) => (
-            <div key={title} style={{ background: 'white', padding: '2rem', borderRadius: 20, border: '1px solid #daebd9', boxShadow: '0 10px 30px rgba(11,46,20,0.05)', borderTop: `4px solid ${color}` }}>
-              <Icon size={36} style={{ color, marginBottom: '1rem' }} />
-              <h4 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: '#0b2e14', fontWeight: 700 }}>{title}</h4>
-              <p style={{ color: '#334a34', marginBottom: '1rem', lineHeight: 1.7 }}>{desc}</p>
-              <ul style={{ paddingLeft: '1.2rem', color: '#334a34', lineHeight: 1.8 }}>
-                {items.map(({ label, val }) => (
-                  <li key={label}><strong>{label}:</strong> {val}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Hedera Guardian */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '2rem 2rem 4rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'center' }}>
-          <div>
-            <span style={{ color: '#e4c878', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 2, fontSize: '0.85rem' }}>Trust Infrastructure</span>
-            <h3 style={{ fontSize: '2rem', color: '#f6f2e7', fontWeight: 700, margin: '0.75rem 0 1rem' }}>Hedera Guardian Model</h3>
-            <p style={{ color: '#c3dccf', marginBottom: '1.5rem', fontSize: '1.05rem', lineHeight: 1.7 }}>
-              Conservation has historically suffered from poor data verification and lack of trust. We use Hedera Guardian as a policy-driven, verifiable data system to solve this.
-            </p>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {([
-                { icon: ShieldCheck, title: 'MRV System', desc: 'Measurement, Reporting, and Verification that is standardized, auditable, and completely transparent.' },
-                { icon: ClipboardList, title: 'Policy Driven', desc: 'Automated rules for tree validation, data integrity, and ESG compliance ensure that every minted asset has real-world backing.' },
-              ] as { icon: LucideIcon; title: string; desc: string }[]).map(({ icon: Icon, title, desc }) => (
-                <li key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '1.2rem', background: 'white', padding: '1.2rem', borderRadius: 12, boxShadow: '0 4px 15px rgba(0,0,0,0.05)', border: '1px solid #daebd9' }}>
-                  <Icon size={24} style={{ color: '#2a6040', flexShrink: 0 }} />
-                  <div>
-                    <h4 style={{ color: '#0b2e14', marginBottom: '0.3rem', fontSize: '1.05rem' }}>{title}</h4>
-                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#334a34' }}>{desc}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div style={{ background: '#0b2e14', borderRadius: 20, padding: '3rem', color: 'white' }}>
-            <h3 style={{ fontSize: '2rem', marginBottom: '1rem', fontWeight: 700 }}>The Strategic Advantage</h3>
-            <p style={{ opacity: 0.9, marginBottom: '1rem', lineHeight: 1.7 }}>By building on an immutable ledger, we provide absolute investor trust, create a highly scalable model, and align completely with global ESG frameworks.</p>
-            <p style={{ opacity: 0.9, lineHeight: 1.7 }}><strong>Vision:</strong> To become the definitive source of truth for conservation in Africa.</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Ecosystem Flow / Pipeline */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 2rem 4rem' }}>
-        <div style={{ background: '#0b2e14', borderRadius: 30, padding: '4rem 2rem', color: 'white', textAlign: 'center' }}>
-          <h2 style={{ color: '#e8c96a', marginBottom: '3rem', fontSize: '2.2rem', fontWeight: 700 }}>The Integrated Conservation Pipeline</h2>
-          <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', maxWidth: 1000, margin: '0 auto' }}>
-            {PIPELINE.map(({ icon: Icon, label }) => (
-              <div key={label} style={{ background: '#174823', border: '2px solid #c9a227', borderRadius: '50%', width: 130, height: 130, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-                <Icon size={28} style={{ color: '#e8c96a', marginBottom: '0.5rem' }} />
-                <span style={{ fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', color: '#e8c96a' }}>{label}</span>
+      <div className="bg-[#f2f0e8] border-b border-[#173d2b]/10">
+        <div className="max-w-8xl mx-auto container-px py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {([
+              [Globe, 'ESG Aligned'],
+              [Target, 'SDG Goals'],
+              [Link2, 'Hedera Guardian'],
+              [Microscope, 'Science-Backed'],
+            ] as [LucideIcon, string][]).map(([Icon, label]) => (
+              <div key={label} className="flex items-center gap-3">
+                <Icon size={22} className="text-[#285b3c] shrink-0" strokeWidth={1.4} />
+                <span className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#173d2b]">{label}</span>
               </div>
             ))}
           </div>
-          <div style={{ background: 'white', color: '#131f14', padding: '2rem', borderRadius: 15, maxWidth: 600, margin: '3rem auto 0', fontWeight: 500, lineHeight: 1.7 }}>
-            A regenerative system where <strong style={{ color: '#3d7a52' }}>Nature thrives</strong>, <strong style={{ color: '#3d7a52' }}>Youth earn</strong>, <strong style={{ color: '#3d7a52' }}>Data builds trust</strong>, and <strong style={{ color: '#3d7a52' }}>Investors participate</strong>.<br />
-            <span style={{ fontSize: '0.85rem', color: '#617060', display: 'block', marginTop: '0.5rem', textTransform: 'uppercase', letterSpacing: 1 }}>A Replicable ESG-Aligned Green Economy Model</span>
-          </div>
         </div>
       </div>
 
-      {/* Footer note */}
-      <div style={{ background: '#0b2e14', color: '#a8c8a8', textAlign: 'center', padding: '3rem 2rem' }}>
-        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white', fontWeight: 700 }}>Oloolua Forest Youth Guardians</h3>
-        <p style={{ opacity: 0.7, fontSize: '0.9rem' }}>Conservation must pay to sustain itself.</p>
+      {/* JAZA MITI */}
+      <section className="py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto container-px">
+          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
+            <div>
+              <span className="eyebrow">Flagship Project</span>
+              <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">Jaza Miti: trees you can track</h2>
+              <p className="mt-5 text-base text-[#3f4a42] leading-relaxed">
+                Jaza Miti makes every tree easy to track. Local youth record each tree, and the data is saved.
+              </p>
+              <ul className="mt-8 space-y-0 border-t border-[#173d2b]/15">
+                {([
+                  { icon: Satellite, title: 'Data capture', desc: 'We record location, species, growth and survival.' },
+                  { icon: Coins, title: 'Digital records', desc: 'Each tree gets a secure record on Hedera.' },
+                ] as { icon: LucideIcon; title: string; desc: string }[]).map(({ icon: Icon, title, desc }) => (
+                  <li key={title} className="flex items-start gap-4 py-5 border-b border-[#173d2b]/15">
+                    <Icon size={22} className="text-[#285b3c] shrink-0 mt-0.5" strokeWidth={1.4} />
+                    <div>
+                      <h3 className="font-display text-lg text-[#173d2b]">{title}</h3>
+                      <p className="mt-1 text-sm text-[#3f4a42]/80 leading-relaxed">{desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2px] bg-[#e6e3d8]">
+              <img
+                src="/assets/images/seedling1.jpeg"
+                alt="Tree planting"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ICRAF / CIFOR */}
+      <section className="py-20 sm:py-24 bg-[#f2f0e8] border-y border-[#173d2b]/10">
+        <div className="max-w-7xl mx-auto container-px">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="eyebrow justify-center">Science</span>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">Science partners</h2>
+            <p className="mt-4 text-sm sm:text-base text-[#3f4a42]/80 leading-relaxed">
+              We use research from ICRAF and CIFOR to guide our work.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {ICRAF_CARDS.map(({ icon: Icon, title, items }) => (
+              <div key={title} className="pt-5 border-t-2 border-[#c3a66b]">
+                <Icon size={26} className="text-[#285b3c] mb-4" strokeWidth={1.4} />
+                <h3 className="font-display text-xl text-[#173d2b]">{title}</h3>
+                <ul className="mt-3 space-y-2">
+                  {items.map(i => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm text-[#3f4a42]/85">
+                      <span className="mt-2 w-1 h-1 rounded-full bg-[#285b3c] shrink-0" /> {i}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Regenerative Strategies */}
+      <section className="py-20 sm:py-24">
+        <div className="max-w-7xl mx-auto container-px">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="eyebrow justify-center">Our Approach</span>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">Work that supports the whole ecosystem</h2>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+            {REGEN_CARDS.map(({ icon: Icon, title, accent, desc, items }) => (
+              <div key={title} className="bg-white border border-[#173d2b]/10 p-7 sm:p-8" style={{ borderTopColor: accent, borderTopWidth: 3 }}>
+                <Icon size={28} style={{ color: accent }} className="mb-4" strokeWidth={1.4} />
+                <h3 className="font-display text-2xl text-[#173d2b]">{title}</h3>
+                <p className="mt-3 text-sm text-[#3f4a42]/85 leading-relaxed">{desc}</p>
+                <ul className="mt-5 space-y-2.5 border-t border-[#173d2b]/10 pt-5">
+                  {items.map(({ label, val }) => (
+                    <li key={label} className="text-sm text-[#3f4a42]/85 leading-relaxed">
+                      <strong className="text-[#173d2b]">{label}:</strong> {val}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Hedera Guardian */}
+      <section className="pb-20 sm:pb-24">
+        <div className="max-w-7xl mx-auto container-px">
+          <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-start">
+            <div>
+              <span className="eyebrow">Trusted Data</span>
+              <h2 className="mt-4 font-display text-3xl sm:text-4xl text-[#173d2b]">How we keep records trusted</h2>
+              <p className="mt-5 text-base text-[#3f4a42] leading-relaxed">
+                Poor data makes conservation hard to trust. Hedera Guardian gives us clear, checked records.
+              </p>
+              <ul className="mt-8 space-y-0 border-t border-[#173d2b]/15">
+                {([
+                  { icon: ShieldCheck, title: 'Clear measurement', desc: 'We measure, report and verify our work.' },
+                  { icon: ClipboardList, title: 'Rules that protect data', desc: 'Each record follows set rules before it counts.' },
+                ] as { icon: LucideIcon; title: string; desc: string }[]).map(({ icon: Icon, title, desc }) => (
+                  <li key={title} className="flex items-start gap-4 py-5 border-b border-[#173d2b]/15">
+                    <Icon size={22} className="text-[#285b3c] shrink-0 mt-0.5" strokeWidth={1.4} />
+                    <div>
+                      <h3 className="font-display text-lg text-[#173d2b]">{title}</h3>
+                      <p className="mt-1 text-sm text-[#3f4a42]/80 leading-relaxed">{desc}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-[#173d2b] text-[#f7f6f0] p-8 sm:p-10">
+              <h3 className="font-display text-2xl sm:text-3xl">Why this matters</h3>
+              <p className="mt-4 text-sm text-[#f7f6f0]/70 leading-relaxed">
+                Public records build investor trust and support ESG reporting.
+              </p>
+              <p className="mt-4 text-sm text-[#f7f6f0]/70 leading-relaxed">
+                <strong className="text-[#f7f6f0]">Vision:</strong> To be a trusted source for conservation in Africa.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Ecosystem Flow / Pipeline */}
+      <section className="pb-20 sm:pb-24">
+        <div className="max-w-7xl mx-auto container-px">
+          <div className="bg-[#173d2b] text-[#f7f6f0] p-8 sm:p-12">
+            <h2 className="font-display text-2xl sm:text-3xl text-[#c3a66b] text-center">How our work fits together</h2>
+            <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+              {PIPELINE.map(({ icon: Icon, label }) => (
+                <div key={label} className="flex flex-col items-center text-center border border-[#f7f6f0]/15 py-6 px-3">
+                  <Icon size={24} className="text-[#c3a66b] mb-3" strokeWidth={1.4} />
+                  <span className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[#f7f6f0]/85">{label}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-10 text-center text-sm sm:text-base text-[#f7f6f0]/70 leading-relaxed max-w-2xl mx-auto">
+              <strong className="text-[#f7f6f0]">Nature thrives.</strong>{' '}
+              <strong className="text-[#f7f6f0]">Youth earn.</strong>{' '}
+              <strong className="text-[#f7f6f0]">Data builds trust.</strong>{' '}
+              <strong className="text-[#f7f6f0]">Investors take part.</strong>
+            </p>
+            <p className="mt-3 text-center text-[0.6rem] uppercase tracking-[0.18em] text-[#a5b89a]">
+              A green model others can copy
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Closing note */}
+      <div className="bg-[#f2f0e8] border-t border-[#173d2b]/10 py-14">
+        <div className="max-w-4xl mx-auto container-px text-center">
+          <h3 className="font-display text-2xl text-[#173d2b]">Oloolua Forest Youth Guardians</h3>
+          <p className="mt-2 text-sm text-[#3f4a42]/70">Conservation must pay to sustain itself.</p>
+        </div>
       </div>
     </PageLayout>
   );
