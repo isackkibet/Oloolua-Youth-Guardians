@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Oloolua Youth Guardians</title>
+  <desc id="desc">A circular forest emblem with a broad tree, rising sun, river, and young guardians.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff5c7"/>
+      <stop offset="1" stop-color="#f3edcf"/>
+    </linearGradient>
+    <linearGradient id="canopy" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#79b928"/>
+      <stop offset="0.52" stop-color="#248638"/>
+      <stop offset="1" stop-color="#10542e"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#73e1d4"/>
+      <stop offset="0.55" stop-color="#16a9ae"/>
+      <stop offset="1" stop-color="#087b81"/>
+    </linearGradient>
+    <radialGradient id="sun">
+      <stop offset="0" stop-color="#fff7a4"/>
+      <stop offset="1" stop-color="#f4b923"/>
+    </radialGradient>
+    <clipPath id="scene">
+      <circle cx="256" cy="256" r="185"/>
+    </clipPath>
+    <path id="top-arc" d="M 47 256 A 209 209 0 0 1 465 256"/>
+    <path id="bottom-arc" d="M 47 256 A 209 209 0 0 0 465 256"/>
+  </defs>
+
+  <circle cx="256" cy="256" r="249" fill="#d6b33d"/>
+  <circle cx="256" cy="256" r="241" fill="#123d2b" stroke="#f2d875" stroke-width="2"/>
+  <circle cx="256" cy="256" r="187" fill="#fbf7e9" stroke="#d6b33d" stroke-width="3"/>
+
+  <g clip-path="url(#scene)">
+    <rect x="68" y="68" width="376" height="376" fill="url(#sky)"/>
+    <circle cx="151" cy="243" r="48" fill="url(#sun)"/>
+    <path d="M66 278 C114 253 151 263 191 278 C230 291 273 255 313 269 C355 283 393 259 449 274 L449 448 L66 448Z" fill="#b4cf67"/>
+
+    <!-- Broad Oloolua canopy and spreading branches -->
+    <path d="M257 302 C259 264 264 231 259 196 C255 168 246 142 251 119" fill="none" stroke="#76512d" stroke-width="15" stroke-linecap="round"/>
+    <path d="M258 221 C224 200 196 178 164 167 C138 158 116 160 95 151 M257 211 C217 207 184 207 147 215 C121 221 102 230 86 242 M258 206 C294 187 325 169 354 160 C382 151 406 154 424 162 M258 219 C302 209 335 210 371 219 C393 224 412 233 428 243 M254 184 C235 163 218 147 197 137 M267 185 C287 164 305 149 327 138" fill="none" stroke="#76512d" stroke-width="8" stroke-linecap="round"/>
+    <path d="M257 222 C239 203 222 188 207 177 M259 219 C279 199 296 184 313 174 M254 201 C231 181 216 169 199 159 M264 201 C283 184 299 171 317 160" fill="none" stroke="#a87539" stroke-width="4" stroke-linecap="round"/>
+
+    <path d="M73 171 C82 150 102 141 124 145 C131 123 155 113 179 122 C194 101 224 100 244 116 C263 93 298 96 314 117 C338 104 365 114 372 136 C397 130 421 145 427 166 C445 181 437 204 417 211 C394 228 367 222 347 215 C325 230 294 223 277 214 C251 229 225 224 209 212 C183 228 153 220 138 207 C111 223 81 210 73 191 C65 184 66 177 73 171Z" fill="#145c32"/>
+    <path d="M79 164 C92 145 112 141 130 148 C139 128 163 121 181 132 C200 111 223 111 242 126 C262 106 289 108 306 128 C327 112 351 119 361 139 C386 133 408 146 415 164 C433 180 425 197 408 204 C387 216 365 211 346 204 C325 218 300 215 281 205 C258 219 232 214 214 204 C191 218 165 214 147 200 C124 215 99 207 90 193 C75 189 72 174 79 164Z" fill="url(#canopy)"/>
+    <path d="M102 155 C121 142 139 148 151 160 C170 140 190 138 207 153 C225 136 246 140 258 155 C276 138 298 142 310 158 C331 143 352 149 360 165 C382 158 402 169 407 184 C388 196 366 193 347 184 C326 198 303 194 285 186 C266 201 244 199 226 188 C205 203 183 198 168 187 C148 201 126 193 116 180 C101 179 95 166 102 155Z" fill="#65a923" opacity=".92"/>
+    <path d="M112 162 C127 154 137 157 146 165 M177 150 C191 145 199 149 207 157 M246 151 C258 146 267 150 275 158 M323 153 C338 150 347 157 352 166 M382 174 C390 173 396 177 400 184" fill="none" stroke="#b8dc46" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+
+    <!-- New growth on the right and the flowing stream -->
+    <path d="M347 291 C352 259 359 238 375 220 C390 202 407 198 423 205 C408 217 399 231 394 248 C408 238 423 237 436 243 C413 253 399 272 393 296Z" fill="#2f893d"/>
+    <path d="M274 303 C321 289 359 293 397 315 C421 329 437 348 454 367 C416 350 391 343 362 345 C327 347 306 337 274 321Z" fill="url(#water)"/>
+    <path d="M273 306 C321 301 356 309 394 331 C416 344 431 357 446 370" fill="none" stroke="#c4fff0" stroke-width="5" stroke-linecap="round"/>
+    <path d="M289 323 C326 316 355 323 383 340" fill="none" stroke="#4bd1c8" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Young guardians celebrating restoration -->
+    <g fill="#123d2b">
+      <circle cx="123" cy="283" r="10"/>
+      <path d="M111 298 Q123 290 135 298 L141 338 L105 338Z M113 301 L101 279 L105 275 L120 292 M133 300 L145 278 L150 280 L143 307"/>
+      <circle cx="157" cy="274" r="11"/>
+      <path d="M144 290 Q157 283 170 290 L176 340 L138 340Z M146 294 L137 270 L142 267 L154 286 M168 293 L179 263 L184 266 L178 300"/>
+      <circle cx="191" cy="287" r="9"/>
+      <path d="M180 300 Q191 293 202 300 L207 339 L175 339Z M181 303 L171 282 L176 279 L189 298 M201 303 L211 283 L216 286 L210 310"/>
+    </g>
+    <path d="M72 340 C122 327 171 332 216 346 C261 359 305 350 349 343 C386 338 419 348 450 369 L450 448 L72 448Z" fill="#287a38"/>
+    <path d="M69 364 C131 348 180 354 226 368 C270 381 316 367 359 362 C396 358 426 371 452 388 L452 448 L69 448Z" fill="#145b31"/>
+    <path d="M213 362 C246 371 273 372 302 365 C326 359 347 358 368 363" fill="none" stroke="#8fbe3f" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <circle cx="256" cy="256" r="187" fill="none" stroke="#fff8db" stroke-width="2"/>
+  <text fill="#fff6d5" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="2.1" text-anchor="middle">
+    <textPath href="#top-arc" startOffset="50%">OLOOLUA YOUTH GUARDIANS</textPath>
+  </text>
+  <text fill="#f0d46b" font-family="Arial, Helvetica, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.7" text-anchor="middle">
+    <textPath href="#bottom-arc" startOffset="50%">CONSERVE  •  EMPOWER  •  THRIVE</textPath>
+  </text>
+</svg>

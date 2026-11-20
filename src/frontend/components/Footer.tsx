@@ -2,9 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { TreePine, MapPin, Mail, Phone, ExternalLink, Loader2, ArrowUpRight } from 'lucide-react';
+import { MapPin, Mail, Phone, ExternalLink, Loader2, ArrowUpRight } from 'lucide-react';
 import { useMessageForm } from '@frontend/hooks/useMessageForm';
 import { Honeypot, FormFeedback } from './FormBits';
+import BrandMark from './BrandMark';
 
 const PHONES = ['0112583681', '0742004641', '0725772240'];
 const EMAIL = 'austinnamuye@gmail.com';
@@ -20,9 +21,7 @@ export default function Footer() {
           {/* Brand + newsletter */}
           <div className="lg:col-span-4 space-y-6">
             <Link href="/" className="flex items-center gap-3 group w-fit">
-              <span className="w-11 h-11 shrink-0 rounded-full border border-[#c3a66b]/40 flex items-center justify-center text-[#c3a66b]">
-                <TreePine className="w-5 h-5" strokeWidth={1.6} />
-              </span>
+              <BrandMark size={44} />
               <span className="flex flex-col leading-none">
                 <span className="font-display text-xl font-semibold tracking-tight">Oloolua Youth Guardians</span>
                 <span className="text-[0.58rem] text-[#a5b89a] font-semibold tracking-[0.24em] uppercase mt-1.5">

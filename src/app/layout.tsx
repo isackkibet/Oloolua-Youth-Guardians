@@ -31,6 +31,7 @@ export const metadata: Metadata = {
   description:
     'Oloolua Forest Community Forest Association (CFA) Seedling User Group — protecting and restoring natural heritage through indigenous tree nurseries, youth stewardship and community conservation.',
   applicationName: 'Oloolua Youth Guardians',
+  icons: { icon: '/assets/images/oloolua-youth-guardians-round.svg' },
   keywords: [
     'Oloolua Forest',
     'Kenya conservation',

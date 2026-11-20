@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, TreePine } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import type { ReactNode } from 'react';
+import BrandMark from '@frontend/components/BrandMark';
 
 type AuthShellProps = {
   title: string;
@@ -27,9 +28,7 @@ export default function AuthShell({ title, description, children }: AuthShellPro
 
         <div className="relative z-10 flex items-start justify-between gap-6 p-6 sm:p-8 lg:p-12">
           <Link href="/" className="inline-flex items-center gap-3 text-white" aria-label="Oloolua Youth Guardians home">
-            <span className="flex h-10 w-10 items-center justify-center border border-white/45 text-gold-300">
-              <TreePine className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-            </span>
+            <BrandMark size={40} />
             <span className="flex flex-col">
               <span className="font-heading text-sm font-semibold leading-tight">Oloolua Youth Guardians</span>
               <span className="mt-1 text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-sage">Guardian Hub</span>
@@ -63,9 +62,7 @@ export default function AuthShell({ title, description, children }: AuthShellPro
 
         <div className="flex flex-1 items-center justify-center py-8 lg:py-12">
           <div className="w-full max-w-[27rem]">
-            <div className="flex h-11 w-11 items-center justify-center border border-forest-900/15 bg-forest-50 text-forest-800">
-              <TreePine className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-            </div>
+            <BrandMark size={44} />
             <p className="mt-6 text-[0.65rem] font-semibold uppercase tracking-[0.24em] text-forest-700">Guardian Hub</p>
             <h1 className="mt-2 font-heading text-3xl font-semibold tracking-tight text-forest-950">{title}</h1>
             <p className="mt-3 text-sm leading-relaxed text-forest-900/65">{description}</p>

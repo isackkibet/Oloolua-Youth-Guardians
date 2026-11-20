@@ -83,11 +83,10 @@ body.loaded {
 
 .navbar .logo-image {
     height: 44px;
-    width: auto;
-    border-radius: 6px;
+    width: 44px;
+    border-radius: 50%;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-    background: #fff;
-    padding: 4px;
+    background: transparent;
 }
 
 .navbar .logo i {

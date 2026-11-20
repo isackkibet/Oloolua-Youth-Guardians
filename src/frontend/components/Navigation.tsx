@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { TreePine, Menu, X, Bot, ArrowUpRight } from 'lucide-react';
+import { Menu, X, Bot, ArrowUpRight } from 'lucide-react';
+import BrandMark from './BrandMark';
 
 const NAV_LINKS = [
   { name: 'Home', href: '/' },
@@ -54,9 +55,7 @@ export default function Navigation() {
         <div className="flex justify-between items-center gap-4 h-[76px]">
           {/* Wordmark */}
           <Link href="/" className="flex items-center gap-3 group min-w-0">
-            <span className="w-11 h-11 shrink-0 rounded-full border border-[#173d2b]/20 bg-[#173d2b] flex items-center justify-center text-[#c3a66b] transition-transform duration-300 group-hover:rotate-[-4deg]">
-              <TreePine className="w-5 h-5" strokeWidth={1.6} />
-            </span>
+            <BrandMark size={44} className="transition-transform duration-300 group-hover:rotate-[-4deg]" />
             <span className="flex flex-col min-w-0 leading-none">
               <span className="font-display text-[1.22rem] sm:text-[1.35rem] font-semibold text-[#173d2b] tracking-tight truncate">
                 Oloolua Youth Guardians
