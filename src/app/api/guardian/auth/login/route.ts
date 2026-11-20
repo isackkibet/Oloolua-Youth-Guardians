@@ -5,6 +5,7 @@ import {
   createSessionCookieValue,
   passwordAuthEnabled,
   sessionCookieOptions,
+  sessionTtlSeconds,
 } from '@backend/guardian/session';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,6 +16,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
   const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : '';
   const password = typeof body?.password === 'string' ? body.password : '';
+  const remember = body?.remember === true;
   if (email.length > 254 || !EMAIL_RE.test(email) || password.length === 0 || password.length > 128) {
     return NextResponse.json({ error: 'Email or password is incorrect.' }, { status: 401 });
   }
@@ -22,8 +24,9 @@ export async function POST(request: NextRequest) {
   try {
     const userId = await authenticatePassword(email, password);
     if (!userId) return NextResponse.json({ error: 'Email or password is incorrect.' }, { status: 401 });
+    const ttl = sessionTtlSeconds(remember);
     const response = NextResponse.json({ success: true });
-    response.cookies.set(SESSION_COOKIE, createSessionCookieValue(userId), sessionCookieOptions());
+    response.cookies.set(SESSION_COOKIE, createSessionCookieValue(userId, ttl), sessionCookieOptions(ttl));
     return response;
   } catch (error) {
     console.error('[guardian] member sign-in failed:', error);

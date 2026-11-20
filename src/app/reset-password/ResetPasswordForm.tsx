@@ -53,14 +53,14 @@ export default function ResetPasswordForm({ token }: { token: string }) {
               <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-forest-700" aria-hidden="true" />
               Password updated. Sign in with your new password.
             </p>
-            <Link href="/portal" className="mt-5 inline-flex text-xs font-semibold text-forest-700 underline underline-offset-4">
+            <Link href="/login" className="mt-5 inline-flex text-xs font-semibold text-forest-700 underline underline-offset-4">
               Go to sign in
             </Link>
           </div>
         ) : !token ? (
           <div className="mt-6">
             <p className="text-sm text-forest-800" role="alert">This reset link is missing its token. Request a new link from the sign-in page.</p>
-            <Link href="/portal" className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-forest-700 underline underline-offset-4">
+            <Link href="/login" className="mt-5 inline-flex items-center gap-2 text-xs font-semibold text-forest-700 underline underline-offset-4">
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Back to sign in
             </Link>
           </div>
@@ -100,7 +100,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
               {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
               Set new password
             </button>
-            <Link href="/portal" className="inline-flex items-center gap-2 text-xs font-semibold text-forest-700 underline underline-offset-4">
+            <Link href="/login" className="inline-flex items-center gap-2 text-xs font-semibold text-forest-700 underline underline-offset-4">
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Back to sign in
             </Link>
           </form>

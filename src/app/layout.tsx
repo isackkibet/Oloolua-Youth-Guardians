@@ -2,8 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import Footer from '@frontend/components/Footer';
-import BackToTop from '@frontend/components/BackToTop';
+import SiteChrome from '@frontend/components/SiteChrome';
 import PrivyOAuthReturn from '@frontend/components/guardian/PrivyOAuthReturn';
 
 const display = localFont({
@@ -51,9 +50,7 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${sans.variable} ${heading.variable}`}>
       <body className="bg-ivory text-charcoal flex flex-col min-h-screen antialiased">
         <PrivyOAuthReturn />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <BackToTop />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

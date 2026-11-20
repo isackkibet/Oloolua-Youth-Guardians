@@ -1,6 +1,11 @@
-import { redirect } from 'next/navigation';
+import type { Metadata } from 'next';
+import LoginScreen from './LoginScreen';
 
-// Sign-in lives in the Guardian Hub (Google sign-in, PRD v1.2 B2).
+export const metadata: Metadata = {
+  title: 'Guardian Hub sign in | Oloolua Youth Guardians',
+  description: 'Sign in to the Oloolua Youth Guardians Guardian Hub to manage restoration and nursery records.',
+};
+
 export default function LoginPage() {
-  redirect('/portal');
+  return <LoginScreen />;
 }

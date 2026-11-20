@@ -15,6 +15,11 @@ import type { Role } from '@shared/guardian/constants';
 
 export const SESSION_COOKIE = 'guardian_session';
 const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60;
+const REMEMBER_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+export function sessionTtlSeconds(remember = false): number {
+  return remember ? REMEMBER_SESSION_TTL_SECONDS : SESSION_TTL_SECONDS;
+}
 
 export interface Viewer {
   user: { id: string; name: string; email: string | null };
@@ -87,8 +92,8 @@ export function randomToken(bytes = 32): string {
   return randomBytes(bytes).toString('base64url');
 }
 
-export function createSessionCookieValue(userId: string): string {
-  return signPayload({ uid: userId, exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS });
+export function createSessionCookieValue(userId: string, ttlSeconds = SESSION_TTL_SECONDS): string {
+  return signPayload({ uid: userId, exp: Math.floor(Date.now() / 1000) + ttlSeconds });
 }
 
 export function sessionCookieOptions(maxAge = SESSION_TTL_SECONDS) {
