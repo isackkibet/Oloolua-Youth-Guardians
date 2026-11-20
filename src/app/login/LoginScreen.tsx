@@ -92,7 +92,7 @@ function LoginContent({ session }: { session: SessionInfo | null }) {
                 <>
                   {' '}Missing: {session.authConfigMissing.join(', ')}.
                   {session.authConfigMissing.some((item) => item.startsWith('GUARDIAN_SESSION_SECRET')) && (
-                    <> Add a secret of at least 32 characters in Vercel under Project Settings > Environment Variables for this deployment, then redeploy.</>
+                    <> Add a secret of at least 32 characters in Vercel under Project Settings &gt; Environment Variables for this deployment, then redeploy.</>
                   )}
                   {session.authConfigMissing.includes('GUARDIAN_PASSWORD_AUTH=true or Privy credentials') && (
                     <> Enable email/password sign-in with GUARDIAN_PASSWORD_AUTH=true, or configure Privy for Google sign-in.</>
