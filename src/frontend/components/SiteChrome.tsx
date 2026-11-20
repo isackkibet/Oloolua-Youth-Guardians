@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Footer from './Footer';
 import BackToTop from './BackToTop';
 
-const CHROME_FREE_ROUTES = ['/login', '/forgot-password', '/reset-password', '/portal'];
+const CHROME_FREE_ROUTES = ['/login', '/register', '/forgot-password', '/reset-password', '/portal'];
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

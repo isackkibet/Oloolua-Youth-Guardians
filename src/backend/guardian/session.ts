@@ -216,18 +216,22 @@ async function verifyPassword(password: string, stored: string | null): Promise<
   return timingSafeEqual(actual, expected);
 }
 
-/** Creates an email/password member. New memberships stay pending unless explicitly auto-approved as Viewer. */
+/** Creates an email/password member with the same access policy as verified sign-ins. */
 export async function registerPasswordUser(name: string, email: string, password: string): Promise<string | null> {
   const [, passwordHash] = await Promise.all([ensureGuardianSchema(), hashPassword(password)]);
+  const cleanEmail = email.toLowerCase();
   const rows = (await sql`
     INSERT INTO guardian_users (email, name, password_hash, last_login_at)
-    VALUES (${email.toLowerCase()}, ${name.slice(0, 120)}, ${passwordHash}, now())
+    VALUES (${cleanEmail}, ${name.slice(0, 120)}, ${passwordHash}, now())
     ON CONFLICT DO NOTHING RETURNING id
   `) as { id: string }[];
   if (!rows[0]) return null;
-  const autoViewer = process.env.NODE_ENV === 'development';
+  const isAdmin = adminEmails().has(cleanEmail);
+  const autoViewer = process.env.NODE_ENV === 'development' || process.env.GUARDIAN_AUTO_VIEWER === 'true';
+  const role: Role = isAdmin ? 'admin' : 'viewer';
+  const status = isAdmin || autoViewer ? 'active' : 'pending';
   await sql`INSERT INTO guardian_memberships (user_id, hub_id, role, status)
-    VALUES (${rows[0].id}, ${HUB_ID}, 'viewer', ${autoViewer ? 'active' : 'pending'})`;
+    VALUES (${rows[0].id}, ${HUB_ID}, ${role}, ${status})`;
   return rows[0].id;
 }
 

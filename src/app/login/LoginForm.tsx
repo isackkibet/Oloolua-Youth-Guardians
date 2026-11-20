@@ -147,6 +147,13 @@ export default function LoginForm() {
         {busy && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
         {busy ? 'Signing in...' : 'Sign in to Guardian Hub'}
       </button>
+
+      <p className="mt-5 text-center text-xs text-forest-900/65">
+        Need a Guardian account?{' '}
+        <Link href="/register" className="font-semibold text-forest-700 underline underline-offset-4 hover:text-forest-950">
+          Create one
+        </Link>
+      </p>
     </form>
   );
 }
