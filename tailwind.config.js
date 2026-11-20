@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/frontend/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
@@ -33,6 +33,7 @@ module.exports = {
       },
       fontFamily: {
         display: ['var(--font-display)', 'Georgia', 'Cambria', 'serif'],
+        heading: ['var(--font-heading)', 'var(--font-display)', 'Georgia', 'serif'],
         sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
       },
       maxWidth: {

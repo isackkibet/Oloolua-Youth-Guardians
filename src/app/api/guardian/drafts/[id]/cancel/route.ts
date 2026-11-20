@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { requireMember, toolStatus } from '@/lib/guardian/http';
-import { cancelDraft } from '@/lib/guardian/records';
+import { requireMember, toolStatus } from '@backend/guardian/http';
+import { cancelDraft } from '@backend/guardian/records';
 
 /** Cancel a draft. Nothing is saved, and no prompt is used. */
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {

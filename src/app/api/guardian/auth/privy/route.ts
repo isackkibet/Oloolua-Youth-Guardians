@@ -4,8 +4,8 @@ import {
   createSessionCookieValue,
   sessionCookieOptions,
   upsertSignedInUser,
-} from '@/lib/guardian/session';
-import { verifyPrivyIdentity } from '@/lib/guardian/privy';
+} from '@backend/guardian/session';
+import { verifyPrivyIdentity } from '@backend/guardian/privy';
 
 /**
  * Exchanges a verified Privy identity token for a Guardian session cookie.

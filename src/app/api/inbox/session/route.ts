@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import {
   INBOX_COOKIE, inboxConfig, checkPassword, createSessionToken,
   verifySessionToken, sessionCookieOptions,
-} from '@/lib/inboxAuth';
+} from '@backend/inboxAuth';
 
 // Login attempts are rate limited tightly per IP in src/proxy.ts.
 

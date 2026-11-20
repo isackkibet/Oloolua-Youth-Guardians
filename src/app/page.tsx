@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Navigation from '@/components/Navigation';
-import { NURSERY_SPECIES_CATALOGUE } from '@/data/species';
-import { Reveal, CountUp } from '@/components/Motion';
-import { Honeypot, FormFeedback } from '@/components/FormBits';
-import { useMessageForm } from '@/lib/useMessageForm';
+import Navigation from '@frontend/components/Navigation';
+import { NURSERY_SPECIES_CATALOGUE } from '@shared/data/species';
+import { Reveal, CountUp } from '@frontend/components/Motion';
+import { Honeypot, FormFeedback } from '@frontend/components/FormBits';
+import { useMessageForm } from '@frontend/hooks/useMessageForm';
 import {
   TreePine, Users, Globe, ArrowRight, ArrowUpRight, ChevronDown,
   Leaf, Camera, Rocket, Bot, Landmark, Clipboard, Check, Loader2,

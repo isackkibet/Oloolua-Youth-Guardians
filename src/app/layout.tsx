@@ -1,22 +1,30 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
-import Footer from '@/components/Footer';
-import BackToTop from '@/components/BackToTop';
-import PrivyOAuthReturn from '@/components/guardian/PrivyOAuthReturn';
+import Footer from '@frontend/components/Footer';
+import BackToTop from '@frontend/components/BackToTop';
+import PrivyOAuthReturn from '@frontend/components/guardian/PrivyOAuthReturn';
 
-const display = Playfair_Display({
-  subsets: ['latin'],
+const display = localFont({
+  src: './fonts/playfair-display-latin.woff2',
   variable: '--font-display',
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: '400 700',
 });
 
-const sans = Inter({
-  subsets: ['latin'],
+const sans = localFont({
+  src: './fonts/inter-latin.woff2',
   variable: '--font-sans',
   display: 'swap',
+  weight: '100 900',
+});
+
+const heading = localFont({
+  src: './fonts/manrope-latin.woff2',
+  variable: '--font-heading',
+  display: 'swap',
+  weight: '400 800',
 });
 
 export const metadata: Metadata = {
@@ -40,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
+    <html lang="en" className={`${display.variable} ${sans.variable} ${heading.variable}`}>
       <body className="bg-ivory text-charcoal flex flex-col min-h-screen antialiased">
         <PrivyOAuthReturn />
         <main className="flex-1">{children}</main>

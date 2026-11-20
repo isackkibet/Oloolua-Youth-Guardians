@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 import { PlusCircle, ArrowRight, Search, Bot } from 'lucide-react';
-import { NURSERY_SPECIES_CATALOGUE } from '@/data/species';
+import { NURSERY_SPECIES_CATALOGUE } from '@shared/data/species';
 
 export default function SeedlingsPage() {
   const [activeFilter, setActiveFilter] = useState('all');

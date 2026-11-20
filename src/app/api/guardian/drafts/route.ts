@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { requireMember, toolStatus } from '@/lib/guardian/http';
-import { createDraft, getOpenDraft } from '@/lib/guardian/records';
-import { isActivityType } from '@/lib/guardian/constants';
+import { requireMember, toolStatus } from '@backend/guardian/http';
+import { createDraft, getOpenDraft } from '@backend/guardian/records';
+import { isActivityType } from '@shared/guardian/constants';
 
 /** The user's open draft, if any. */
 export async function GET(request: NextRequest) {

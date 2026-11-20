@@ -1,4 +1,4 @@
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 import Image from 'next/image';
 import {
   Satellite, Coins, Sprout, Database, TrendingUp, Hexagon, Palette,

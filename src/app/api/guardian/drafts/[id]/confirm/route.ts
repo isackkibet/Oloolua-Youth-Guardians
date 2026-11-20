@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { requireMember, toolStatus } from '@/lib/guardian/http';
-import { confirmDraft } from '@/lib/guardian/records';
+import { requireMember, toolStatus } from '@backend/guardian/http';
+import { confirmDraft } from '@backend/guardian/records';
 
 /**
  * confirm_activity_record: the only way a record is saved, and only on the

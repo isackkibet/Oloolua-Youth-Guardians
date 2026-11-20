@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import Navigation from '@/components/Navigation';
+import Navigation from '@frontend/components/Navigation';
 import {
   Inbox, Lock, LogOut, RefreshCw, Search, Download, Copy, Check, Mail, Phone,
   MessageCircle, CheckCircle2, RotateCcw, AlertCircle, Loader2, ShieldCheck,

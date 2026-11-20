@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 import { X, ChevronLeft, ChevronRight, Expand } from 'lucide-react';
 
 // Exact image list from the original photogallery.html JS array

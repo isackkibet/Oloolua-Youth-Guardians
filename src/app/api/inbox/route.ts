@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { sql, initDbSchema } from '@/lib/db';
-import { INBOX_COOKIE, verifySessionToken } from '@/lib/inboxAuth';
+import { sql, initDbSchema } from '@backend/db';
+import { INBOX_COOKIE, verifySessionToken } from '@backend/inboxAuth';
 
 const KINDS = new Set(['all', 'contact', 'commitment', 'pledge', 'newsletter']);
 const STATUSES = new Set(['open', 'handled', 'all']);

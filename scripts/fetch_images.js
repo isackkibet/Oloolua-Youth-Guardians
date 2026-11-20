@@ -20,9 +20,9 @@ const speciesList = [
     { name: 'sisal', title: 'Agave_sisalana' }
 ];
 
-const imgDir = path.join(__dirname, '..', 'assets', 'images', 'tree-species');
+const imgDir = path.join(__dirname, '..', 'public', 'assets', 'images', 'tree-species');
 if (!fs.existsSync(imgDir)) {
-    fs.mkdirSync(imgDir);
+    fs.mkdirSync(imgDir, { recursive: true });
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));

@@ -24,10 +24,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { randomBytes } from 'node:crypto';
 
-import { assessRisk } from '@/lib/security/client-ip';
-import { checkPolicy, POLICIES, rateLimitHeaders, routeKey } from '@/lib/security/rate-limit';
-import { verifyCsrf } from '@/lib/security/csrf';
-import { securityHeaders, hstsHeader, applyCors, buildCsp } from '@/lib/security/headers';
+import { assessRisk } from '@backend/security/client-ip';
+import { checkPolicy, POLICIES, rateLimitHeaders, routeKey } from '@backend/security/rate-limit';
+import { verifyCsrf } from '@backend/security/csrf';
+import { securityHeaders, hstsHeader, applyCors, buildCsp } from '@backend/security/headers';
 
 /**
  * CSP starts in REPORT-ONLY mode: the browser logs violations to the console
@@ -41,8 +41,10 @@ const CSP_ENFORCE = process.env.CSP_ENFORCE === 'true';
 function policyFor(pathname: string, method: string): Policy[] {
   // Password attempts get their own tight budget on top of the write budget.
   if (pathname === '/api/inbox/session' && method === 'POST') return [POLICIES.write, POLICIES.login];
-  // Each visitor session gets its own AI allowance, so starting them is tightly limited.
-  if (pathname === '/api/guardian/auth/guest' && method === 'POST') return [POLICIES.write, POLICIES.login];
+  // Keep password auth attempts tightly limited.
+  if (method === 'POST' && ['/api/guardian/auth/login', '/api/guardian/auth/register'].includes(pathname)) {
+    return [POLICIES.write, POLICIES.login];
+  }
   return method === 'GET' || method === 'HEAD' ? [POLICIES.api] : [POLICIES.write];
 }
 

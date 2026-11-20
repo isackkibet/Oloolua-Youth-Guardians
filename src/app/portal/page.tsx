@@ -1,38 +1,63 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
-import Navigation from '@/components/Navigation';
-import GuardianChat from '@/components/guardian/GuardianChat';
-import { AuditPanel, DiaryPanel, NurseryPanel, RecordPanel, TeamPanel, VerifyPanel } from '@/components/guardian/HubPanels';
-import { api, type Quota, type SessionInfo } from '@/components/guardian/api';
-import { GuardianAuthProvider, useGuardianAuth } from '@/components/guardian/PrivyAuth';
-import { ROLE_LABELS, can, type Capability, type Role } from '@/lib/guardian/constants';
+import dynamic from 'next/dynamic';
 import {
-  Bot, Sprout, BookOpen, PlusCircle, ShieldCheck, ScrollText, Users, Lock, LogOut, Loader2, Clock, AlertCircle, Calendar,
+  AlertCircle, ArrowLeft, Bot, BookOpen, ClipboardList, Clock, LayoutDashboard, Loader2, Lock, LogOut,
+  Library, Mail, Menu, PlusCircle, ScrollText, ShieldCheck, Sprout, Users, X,
 } from 'lucide-react';
+import { api, type Quota, type SessionInfo } from '@frontend/components/guardian/api';
+import { GuardianAuthProvider, useGuardianAuth } from '@frontend/components/guardian/PrivyAuth';
+import { ROLE_LABELS, can, type Capability, type Role } from '@shared/guardian/constants';
+import './portal.css';
 
-const TABS: { id: string; label: string; icon: typeof Bot; need: Capability }[] = [
-  { id: 'ai', label: 'AI Guardian', icon: Bot, need: 'read' },
-  { id: 'nursery', label: 'Nursery', icon: Sprout, need: 'read' },
-  { id: 'diary', label: 'Keeper Diary', icon: BookOpen, need: 'read' },
-  { id: 'record', label: 'Record', icon: PlusCircle, need: 'record' },
-  { id: 'verify', label: 'Verification', icon: ShieldCheck, need: 'verify' },
-  { id: 'audit', label: 'Audit', icon: ScrollText, need: 'viewAudit' },
-  { id: 'team', label: 'Team', icon: Users, need: 'manageUsers' },
+const PanelLoading = () => (
+  <div className="hub-empty" aria-live="polite">
+    <Loader2 className="h-4 w-4 animate-spin text-forest-700" />
+    <span className="hub-empty-note">Loading section...</span>
+  </div>
+);
+
+const GuardianChat = dynamic(() => import('@frontend/components/guardian/GuardianChat'), { loading: PanelLoading });
+const OverviewPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.OverviewPanel), { loading: PanelLoading });
+const NurseryPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.NurseryPanel), { loading: PanelLoading });
+const RecordsPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.RecordsPanel), { loading: PanelLoading });
+const DiaryPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.DiaryPanel), { loading: PanelLoading });
+const KnowledgePanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.KnowledgePanel), { loading: PanelLoading });
+const RecordPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.RecordPanel), { loading: PanelLoading });
+const VerifyPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.VerifyPanel), { loading: PanelLoading });
+const AuditPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.AuditPanel), { loading: PanelLoading });
+const TeamPanel = dynamic(() => import('@frontend/components/guardian/HubPanels').then((m) => m.TeamPanel), { loading: PanelLoading });
+
+type HubTab = {
+  id: string;
+  label: string;
+  icon: typeof Bot;
+  need: Capability;
+  group: 'Workspace' | 'Actions' | 'Administration';
+};
+
+const TABS: HubTab[] = [
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, need: 'read', group: 'Workspace' },
+  { id: 'nursery', label: 'Nursery', icon: Sprout, need: 'read', group: 'Workspace' },
+  { id: 'records', label: 'Activity records', icon: ClipboardList, need: 'read', group: 'Workspace' },
+  { id: 'diary', label: 'Keeper Diary', icon: BookOpen, need: 'read', group: 'Workspace' },
+  { id: 'knowledge', label: 'Knowledge', icon: Library, need: 'read', group: 'Workspace' },
+  { id: 'ai', label: 'AI Guardian', icon: Bot, need: 'read', group: 'Workspace' },
+  { id: 'record', label: 'New record', icon: PlusCircle, need: 'record', group: 'Actions' },
+  { id: 'verify', label: 'Verification', icon: ShieldCheck, need: 'verify', group: 'Administration' },
+  { id: 'audit', label: 'Audit trail', icon: ScrollText, need: 'viewAudit', group: 'Administration' },
+  { id: 'team', label: 'Team', icon: Users, need: 'manageUsers', group: 'Administration' },
 ];
 
-const EVENTS = [
-  { date: 'October 15, 2026', title: 'Jaza Miti Planting Day', text: 'We will plant Croton and Markhamia along the Oloolua stream.' },
-  { date: 'November 2, 2026', title: 'Art in Nature Mural Festival', text: 'Local youth paint an environmental mural with wildlife experts.' },
-  { date: 'December 10, 2026', title: 'Honey Harvest Workshop', text: 'Learn about hives, honey and forest protection.' },
-];
+const GROUPS: HubTab['group'][] = ['Workspace', 'Actions', 'Administration'];
 
 export default function GuardianHubPage() {
   const [session, setSession] = useState<SessionInfo | null>(null);
-  const [tab, setTabState] = useState('ai');
+  const [tab, setTabState] = useState('overview');
   const [quota, setQuota] = useState<Quota | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const loadSession = useCallback(async () => {
     const r = await api<SessionInfo>('/api/guardian/auth/session');
@@ -47,8 +72,14 @@ export default function GuardianHubPage() {
     void loadSession();
   }, [loadSession]);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
+
   const setTab = (id: string) => {
     setTabState(id);
+    setMenuOpen(false);
     const url = new URL(window.location.href);
     url.searchParams.set('tab', id);
     url.searchParams.delete('record');
@@ -57,96 +88,191 @@ export default function GuardianHubPage() {
 
   const role = (session?.role ?? null) as Role | null;
   const tabs = TABS.filter((t) => can(role, t.need));
-  const activeTab = tabs.some((t) => t.id === tab) ? tab : 'ai';
+  const activeTab = tabs.some((t) => t.id === tab) ? tab : 'overview';
+  const active = tabs.find((t) => t.id === activeTab) ?? tabs[0];
   const bump = () => setRefreshKey((k) => k + 1);
+  const displayName = session?.user?.name?.trim() || 'Member';
+  const initials = displayName.split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('') || 'OY';
+
+  const navButton = (t: HubTab, mobile = false) => {
+    const Icon = t.icon;
+    const isActive = activeTab === t.id;
+    return (
+      <button
+        key={`${mobile ? 'm' : 'd'}-${t.id}`}
+        type="button"
+        aria-current={isActive ? 'page' : undefined}
+        onClick={() => setTab(t.id)}
+        className="hub-nav-item"
+      >
+        <Icon className="hub-nav-icon" aria-hidden="true" />
+        <span className="truncate">{t.label}</span>
+        {isActive && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-sage" aria-hidden="true" />}
+      </button>
+    );
+  };
+
+  const sidebar = (mobile = false) => (
+    <div className={`flex h-full flex-col ${mobile ? '' : 'hub-sidebar'}`} id={mobile ? 'hub-sidebar-mobile' : undefined}>
+      <div className="hub-sidebar-brand">
+        <span className="hub-brand-mark" aria-hidden="true">OYG</span>
+        <span className="min-w-0">
+          <span className="block truncate text-sm font-semibold text-forest-900">Oloolua Guardians</span>
+          <span className="block text-[11px] text-forest-900/50">Nursery management</span>
+        </span>
+        {mobile && (
+          <button type="button" onClick={() => setMenuOpen(false)} className="hub-btn hub-btn-quiet ml-auto px-2" aria-label="Close navigation">
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
+      </div>
+      <div className="hub-sidebar-scroll">
+        {GROUPS.map((group) => {
+          const groupTabs = tabs.filter((t) => t.group === group);
+          if (!groupTabs.length) return null;
+          return (
+            <nav key={group} aria-label={group} className="mb-6">
+              <p className="hub-nav-label">{group}</p>
+              <div className="hub-nav-list">{groupTabs.map((t) => navButton(t, mobile))}</div>
+            </nav>
+          );
+        })}
+      </div>
+      <div className="hub-sidebar-footer">
+        <div className="mb-3 flex items-center gap-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-forest-100 text-[11px] font-bold text-forest-900" aria-hidden="true">{initials}</span>
+          <span className="min-w-0">
+            <span className="block truncate text-xs font-semibold text-forest-900">{displayName}</span>
+            <span className="block text-[11px] text-forest-900/55">
+              {role ? ROLE_LABELS[role] : 'Member'}
+            </span>
+          </span>
+        </div>
+        <SignOutButton
+          onDone={() => { setQuota(null); void loadSession(); }}
+          className="hub-btn hub-btn-secondary w-full"
+        />
+      </div>
+    </div>
+  );
 
   return (
     <GuardianAuthProvider needsSession={!!session && !session.signedIn} onSessionCreated={loadSession}>
-    <div className="min-h-screen bg-ivory text-charcoal flex flex-col">
-      <Navigation />
+      <div className="hub">
+        {sidebar()}
 
-      {!session && (
-        <div className="flex-1 flex items-center justify-center py-24"><Loader2 className="w-6 h-6 animate-spin text-[#285b3c]" aria-label="Loading" /></div>
-      )}
+        {menuOpen && (
+          <>
+            <button type="button" className="hub-overlay" aria-label="Close navigation" onClick={() => setMenuOpen(false)} />
+            <aside className="hub-drawer">{sidebar(true)}</aside>
+          </>
+        )}
 
-      {session && !session.signedIn && <SignInGate session={session} onSignedIn={loadSession} onGuest={() => { setTab('record'); void loadSession(); }} />}
-
-      {session?.signedIn && !role && (
-        <div className="flex-1 flex items-center justify-center p-4 py-20">
-          <div className="max-w-md w-full p-8 bg-white border border-[#173d2b]/12 text-center space-y-3">
-            <Clock className="w-10 h-10 mx-auto text-[#c3a66b]" strokeWidth={1.4} />
-            <h1 className="font-display text-xl text-[#173d2b]">
-              {session.membershipStatus === 'suspended' ? 'Access suspended' : 'Waiting for approval'}
-            </h1>
-            <p className="text-sm text-[#3f4a42]/80">
-              {session.membershipStatus === 'suspended'
-                ? 'Your access to the Guardian Hub has been suspended. Please contact a Guardian Admin.'
-                : `You are signed in as ${session.user?.email ?? session.user?.name}. Being signed in does not give access to Guardian data yet: a Guardian Admin must approve your account and choose your role.`}
-            </p>
-            <SignOutButton onDone={() => { setQuota(null); void loadSession(); }} className="px-4 py-2 rounded-full border border-[#173d2b]/20 hover:bg-[#173d2b]/5 text-sm font-semibold inline-flex items-center gap-2 text-[#173d2b]" />
-          </div>
-        </div>
-      )}
-
-      {session?.signedIn && role && session.user && (
-        <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6 flex-1">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-            <div>
-              <span className="eyebrow">Guardian Hub</span>
-              <h1 className="mt-3 font-display text-3xl sm:text-4xl text-[#173d2b]">Guardian Hub</h1>
-              <p className="mt-2 text-sm text-[#3f4a42]/75">
-                Oloolua Youth Guardians · Turako Nursery · Signed in as <span className="text-[#173d2b] font-semibold">{session.user.name}</span>
-                <span className="ml-2 px-2 py-0.5 rounded-full bg-[#eaf1ea] text-[#285b3c] border border-[#285b3c]/20 text-[0.62rem] font-bold uppercase tracking-[0.1em]">{session.user.guest ? 'Visitor' : ROLE_LABELS[role]}</span>
-              </p>
-              {session.user.guest && (
-                <p className="text-[11px] text-[#3f4a42]/60 mt-1">Your records wait for review before they count.</p>
-              )}
+        <div className="hub-main">
+          {!session && (
+            <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-live="polite">
+              <Loader2 className="h-5 w-5 animate-spin text-forest-700" aria-label="Loading Guardian Hub" />
             </div>
-            <SignOutButton onDone={() => { setQuota(null); void loadSession(); }} className="self-start sm:self-auto px-3.5 py-2 rounded-full border border-[#173d2b]/20 hover:bg-[#173d2b]/5 text-xs font-semibold inline-flex items-center gap-1.5 text-[#173d2b]" />
-          </div>
+          )}
 
-          <div className="flex gap-2 overflow-x-auto pb-1 dark-scroll" role="tablist" aria-label="Guardian Hub sections">
-            {tabs.map((t) => {
-              const Icon = t.icon;
-              const on = activeTab === t.id;
-              return (
-                <button key={t.id} role="tab" aria-selected={on} onClick={() => setTab(t.id)}
-                  className={`shrink-0 px-3.5 py-2 rounded-full text-xs font-semibold flex items-center gap-1.5 transition-colors ${on ? 'bg-[#173d2b] text-[#f7f6f0] border border-[#173d2b]' : 'bg-transparent text-[#285b3c] hover:bg-[#173d2b]/5 border border-[#173d2b]/15'}`}>
-                  <Icon className={`w-4 h-4 ${on ? 'text-[#c3a66b]' : ''}`} /> {t.label}
-                </button>
-              );
-            })}
-          </div>
+          {session && !session.signedIn && (
+            <SignInGate session={session} onSignedIn={loadSession} />
+          )}
 
-          {activeTab === 'ai' && (
-            <>
-              {!session.aiEnabled && (
-                <p className="text-xs text-[#7a5f22] bg-[#fbf3e2] border border-[#c3a66b]/45 rounded-lg px-3 py-2 flex items-start gap-1.5"><AlertCircle className="w-4 h-4 shrink-0" />
-                  AI conversation is not connected. You can still view records, search the Keeper Diary and record activities.
+          {session?.signedIn && !role && (
+            <div className="hub-content flex min-h-[70vh] items-center justify-center">
+              <div className="hub-panel max-w-md p-6 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-forest-50 text-forest-700">
+                  <Clock className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h1 className="hub-heading mt-4 text-xl">
+                  {session.membershipStatus === 'suspended' ? 'Access suspended' : 'Waiting for approval'}
+                </h1>
+                <p className="mt-2 text-sm text-forest-900/65">
+                  {session.membershipStatus === 'suspended'
+                    ? 'Your access to the Guardian Hub has been suspended. Please contact a Guardian Admin.'
+                    : `You are signed in as ${session.user?.email ?? session.user?.name}. A Guardian Admin must approve your account and choose a role before Guardian data is available.`}
                 </p>
-              )}
-              <GuardianChat role={role} firstName={session.user.name.split(' ')[0]} quota={quota} onQuota={setQuota} onRecordSaved={bump} />
+                <SignOutButton
+                  onDone={() => { setQuota(null); void loadSession(); }}
+                  className="hub-btn hub-btn-secondary mt-5"
+                />
+              </div>
+            </div>
+          )}
+
+          {session?.signedIn && role && session.user && (
+            <>
+              <header className="hub-topbar">
+                <button
+                  type="button"
+                  className="hub-btn hub-btn-quiet px-2 lg:hidden"
+                  onClick={() => setMenuOpen(true)}
+                  aria-label="Open navigation"
+                  aria-expanded={menuOpen}
+                  aria-controls="hub-sidebar-mobile"
+                >
+                  <Menu className="h-5 w-5" aria-hidden="true" />
+                </button>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-900/45">Guardian Hub</p>
+                  <h1 className="truncate text-sm font-semibold text-forest-900">{active?.label ?? 'Overview'}</h1>
+                </div>
+                <div className="ml-auto flex items-center gap-2">
+                  <span className="hub-chip hidden sm:inline-flex">
+                    {ROLE_LABELS[role]}
+                  </span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-forest-100 text-[11px] font-bold text-forest-900" aria-hidden="true">{initials}</span>
+                  <SignOutButton
+                    onDone={() => { setQuota(null); void loadSession(); }}
+                    className="hub-btn hub-btn-secondary hidden sm:inline-flex"
+                  />
+                </div>
+              </header>
+
+              <main className="hub-content" id="main-content">
+                {activeTab === 'ai' && !session.aiEnabled && (
+                  <p className="hub-notice mb-5" role="status">
+                    <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    AI conversation is not connected. Records, seedbeds and the Keeper Diary remain available.
+                  </p>
+                )}
+
+                <section aria-label={active?.label ?? 'Overview'}>
+                  {activeTab === 'overview' && <OverviewPanel role={role} refreshKey={refreshKey} onNavigate={setTab} />}
+                  {activeTab === 'nursery' && <NurseryPanel role={role} refreshKey={refreshKey} />}
+                  {activeTab === 'records' && <RecordsPanel role={role} refreshKey={refreshKey} onChanged={bump} />}
+                  {activeTab === 'diary' && <DiaryPanel refreshKey={refreshKey} />}
+                  {activeTab === 'knowledge' && <KnowledgePanel refreshKey={refreshKey} />}
+                  {activeTab === 'ai' && (
+                    <GuardianChat
+                      role={role}
+                      firstName={displayName.split(' ')[0]}
+                      quota={quota}
+                      onQuota={setQuota}
+                      onRecordSaved={bump}
+                    />
+                  )}
+                  {activeTab === 'record' && <RecordPanel onSaved={bump} />}
+                  {activeTab === 'verify' && <VerifyPanel refreshKey={refreshKey} onChanged={bump} />}
+                  {activeTab === 'audit' && <AuditPanel refreshKey={refreshKey} />}
+                  {activeTab === 'team' && <TeamPanel myUserId={session.user.id} refreshKey={refreshKey} />}
+                </section>
+              </main>
             </>
           )}
-          {activeTab === 'nursery' && <NurseryPanel refreshKey={refreshKey} />}
-          {activeTab === 'diary' && <DiaryPanel refreshKey={refreshKey} />}
-          {activeTab === 'record' && <RecordPanel onSaved={bump} />}
-          {activeTab === 'verify' && <VerifyPanel refreshKey={refreshKey} onChanged={bump} />}
-          {activeTab === 'audit' && <AuditPanel refreshKey={refreshKey} />}
-          {activeTab === 'team' && <TeamPanel myUserId={session.user.id} />}
         </div>
-      )}
-    </div>
+      </div>
     </GuardianAuthProvider>
   );
 }
 
-/** Ends both the Guardian session and the Privy session. */
 function SignOutButton({ onDone, className }: { onDone: () => void; className: string }) {
   const auth = useGuardianAuth();
   const [busy, setBusy] = useState(false);
   return (
     <button
+      type="button"
       disabled={busy}
       onClick={async () => {
         setBusy(true);
@@ -157,100 +283,277 @@ function SignOutButton({ onDone, className }: { onDone: () => void; className: s
       }}
       className={className}
     >
-      {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <LogOut className="w-3.5 h-3.5" />} Sign out
+      {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : <LogOut className="h-3.5 w-3.5" aria-hidden="true" />}
+      Sign out
     </button>
   );
 }
 
-function SignInGate({ session, onSignedIn, onGuest }: { session: SessionInfo; onSignedIn: () => void; onGuest: () => void }) {
+function SignInGate({ session, onSignedIn }: { session: SessionInfo; onSignedIn: () => void }) {
   const auth = useGuardianAuth();
   const [devEmail, setDevEmail] = useState('');
-  const [guestName, setGuestName] = useState('');
-  const [guestBusy, setGuestBusy] = useState(false);
-  const [guestError, setGuestError] = useState('');
-  const startGuest = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setGuestBusy(true);
-    setGuestError('');
-    const r = await api<{ error?: string }>('/api/guardian/auth/guest', { body: { name: guestName } });
-    setGuestBusy(false);
-    if (r.ok) onGuest();
-    else setGuestError(r.data?.error ?? 'Could not start. Please try again.');
-  };
+  const [accountMode, setAccountMode] = useState<'login' | 'register' | 'forgot'>('login');
+  const [accountName, setAccountName] = useState('');
+  const [accountEmail, setAccountEmail] = useState('');
+  const [accountPassword, setAccountPassword] = useState('');
+  const [accountConfirmPassword, setAccountConfirmPassword] = useState('');
+  const [accountBusy, setAccountBusy] = useState(false);
+  const [accountError, setAccountError] = useState('');
+  const [accountNotice, setAccountNotice] = useState('');
+  const [devResetLink, setDevResetLink] = useState('');
+
   const devLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const r = await api('/api/guardian/auth/dev', { body: { email: devEmail, name: devEmail.split('@')[0] } });
     if (r.ok) onSignedIn();
   };
-  const signInReady = session.authConfigured && auth.available;
+
+  const switchMode = (mode: 'login' | 'register' | 'forgot') => {
+    setAccountMode(mode);
+    setAccountError('');
+    setAccountNotice('');
+    setDevResetLink('');
+  };
+
+  const submitAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (accountMode === 'register' && accountPassword !== accountConfirmPassword) {
+      setAccountError('The passwords do not match.');
+      return;
+    }
+    setAccountBusy(true);
+    setAccountError('');
+    setAccountNotice('');
+    try {
+      const endpoint = accountMode === 'register' ? '/api/guardian/auth/register' : '/api/guardian/auth/login';
+      const r = await api<{ error?: string }>(endpoint, {
+        body: {
+          ...(accountMode === 'register' ? { name: accountName, confirmPassword: accountConfirmPassword } : {}),
+          email: accountEmail,
+          password: accountPassword,
+        },
+      });
+      if (r.ok) {
+        setAccountPassword('');
+        setAccountConfirmPassword('');
+        onSignedIn();
+      } else {
+        setAccountError(r.data?.error ?? 'Could not sign in. Please try again.');
+      }
+    } catch {
+      setAccountError('Could not reach the server. Please try again.');
+    } finally {
+      setAccountBusy(false);
+    }
+  };
+
+  const requestReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAccountBusy(true);
+    setAccountError('');
+    setAccountNotice('');
+    setDevResetLink('');
+    try {
+      const r = await api<{ error?: string; message?: string; devLink?: string }>('/api/guardian/auth/forgot-password', {
+        body: { email: accountEmail },
+      });
+      if (r.ok) {
+        setAccountNotice(r.data?.message ?? 'If an account exists, a reset link has been sent.');
+        if (r.data?.devLink) setDevResetLink(r.data.devLink);
+      } else {
+        setAccountError(r.data?.error ?? 'Could not send the reset link. Please try again.');
+      }
+    } catch {
+      setAccountError('Could not reach the server. Please try again.');
+    } finally {
+      setAccountBusy(false);
+    }
+  };
+
+  const signInReady = session.privy === true && auth.available;
 
   return (
-    <div className="flex-1 px-4 py-12 sm:py-16">
-      <div className="max-w-md mx-auto p-8 bg-white border border-[#173d2b]/12 space-y-5 text-center">
-        <div className="w-14 h-14 rounded-full bg-[#eaf1ea] border border-[#285b3c]/20 flex items-center justify-center text-[#285b3c] mx-auto"><Lock className="w-7 h-7" strokeWidth={1.4} /></div>
-        <div className="space-y-1.5">
-          <span className="eyebrow justify-center">Sign In</span>
-          <h1 className="font-display text-2xl text-[#173d2b]">AI Guardian</h1>
-          <p className="text-sm text-[#3f4a42]/80">{session.openRecording ? 'Type your name to record an activity.' : 'Sign in to ask about the nursery, search the Keeper Diary and record activities.'}</p>
-        </div>
-
-        {session.openRecording && (
-          <form onSubmit={startGuest} className="space-y-2.5 text-left">
-            <label htmlFor="guest-name" className="block text-sm font-semibold text-[#173d2b]">Record an activity</label>
-            <input id="guest-name" required minLength={2} maxLength={60} autoComplete="name" value={guestName} onChange={(e) => setGuestName(e.target.value)} placeholder="Your name"
-              className="w-full bg-[#f7f6f0] border border-[#173d2b]/15 rounded-lg px-3 py-3 text-sm text-[#252b27] placeholder:text-[#252b27]/35 focus:outline-none focus:border-[#285b3c]" />
-            {guestError && <p role="alert" className="text-xs text-red-700">{guestError}</p>}
-            <button disabled={guestBusy} className="w-full py-3 rounded-full bg-[#173d2b] hover:bg-[#285b3c] disabled:opacity-60 text-[#f7f6f0] font-semibold text-sm flex items-center justify-center gap-2 transition-colors">
-              {guestBusy && <Loader2 className="w-4 h-4 animate-spin" />} Start recording
-            </button>
-            <p className="text-[11px] text-[#3f4a42]/60">No account needed. The Guardian team checks your records before they count.</p>
-          </form>
-        )}
-
-        {auth.error && <p role="alert" className="text-xs text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{auth.error}</p>}
-
-        {auth.linking ? (
-          <p className="flex items-center justify-center gap-2 text-sm text-[#3f4a42]"><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</p>
-        ) : signInReady ? (
-          <div className="space-y-2.5">
-            <button type="button" onClick={auth.signInWithGoogle} disabled={!auth.ready}
-              className="w-full py-3 rounded-full bg-[#173d2b] hover:bg-[#285b3c] disabled:opacity-60 text-[#f7f6f0] font-semibold text-sm flex items-center justify-center gap-3 transition-colors">
-              <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" /><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" /><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z" /><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" /></svg>
-              Continue with Google
-            </button>
-            <button type="button" onClick={auth.signInWithEmail} disabled={!auth.ready}
-              className="w-full py-3 rounded-full border border-[#173d2b]/25 hover:bg-[#173d2b]/5 disabled:opacity-60 text-[#173d2b] font-semibold text-sm transition-colors">
-              Continue with email code
-            </button>
+    <div className="hub-content flex min-h-[80vh] items-center justify-center">
+      <div className="w-full max-w-md">
+        <div className="hub-panel p-6">
+          <div className="flex h-11 w-11 items-center justify-center rounded-md bg-forest-50 text-forest-700">
+            <Lock className="h-5 w-5" aria-hidden="true" />
           </div>
-        ) : session.openRecording ? null : (
-          <p className="text-xs text-[#7a5f22] bg-[#fbf3e2] border border-[#c3a66b]/45 rounded-lg px-3 py-2">Sign-in is not available yet. Please check back soon.</p>
-        )}
-        {(signInReady || !session.openRecording) && <p className="text-[11px] text-[#3f4a42]/60">Sign in to continue. New accounts need approval from a Guardian Admin.</p>}
+          <p className="mt-5 text-[10px] font-semibold uppercase tracking-[0.16em] text-forest-900/45">Guardian Hub</p>
+          <h1 className="hub-heading mt-1 text-2xl">
+            {accountMode === 'register' ? 'Create account' : accountMode === 'forgot' ? 'Reset password' : 'Sign in'}
+          </h1>
+          <p className="mt-2 text-sm text-forest-900/65">
+            {session.passwordAuth
+              ? 'Use your member account to access nursery records.'
+              : 'Sign in to view nursery records and the Keeper Diary.'}
+          </p>
 
-        {session.devLogin && (
-          <form onSubmit={devLogin} className="pt-3 border-t border-[#173d2b]/10 space-y-2 text-left">
-            <p className="text-[11px] text-[#7a5f22] font-semibold">Development sign-in</p>
-            <div className="flex gap-2">
-              <input type="email" required value={devEmail} onChange={(e) => setDevEmail(e.target.value)} placeholder="test email" className="flex-1 bg-[#f7f6f0] border border-[#173d2b]/15 rounded-lg px-3 py-2 text-xs text-[#252b27] focus:outline-none focus:border-[#285b3c]" />
-              <button className="px-3 rounded-full bg-[#173d2b] hover:bg-[#285b3c] text-[#f7f6f0] text-xs font-semibold">Sign in</button>
-            </div>
-          </form>
-        )}
-      </div>
+          {auth.error && <p role="alert" className="hub-message mt-4">{auth.error}</p>}
 
-      <div className="max-w-4xl mx-auto mt-14 space-y-4">
-        <h2 className="font-display text-xl text-[#173d2b] flex items-center gap-2"><Calendar className="w-5 h-5 text-[#c3a66b]" strokeWidth={1.5} /> Upcoming events</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          {EVENTS.map((e) => (
-            <div key={e.title} className="p-5 bg-white border border-[#173d2b]/10 border-t-2 border-t-[#c3a66b] space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#285b3c]">{e.date}</span>
-              <h3 className="font-display text-[1.05rem] text-[#173d2b] leading-snug">{e.title}</h3>
-              <p className="text-xs text-[#3f4a42]/70 leading-relaxed">{e.text}</p>
+          {auth.linking ? (
+            <p className="mt-5 flex items-center justify-center gap-2 text-sm text-forest-900/65" role="status">
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Signing in...
+            </p>
+          ) : signInReady ? (
+            <div className="mt-5 space-y-2">
+              <button type="button" onClick={auth.signInWithGoogle} disabled={!auth.ready} className="hub-btn hub-btn-primary w-full">
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z" /><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" /><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z" /><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" /></svg>
+                Continue with Google
+              </button>
+              <button type="button" onClick={auth.signInWithEmail} disabled={!auth.ready} className="hub-btn hub-btn-secondary w-full">
+                Continue with email code
+              </button>
             </div>
-          ))}
+          ) : session.passwordAuth ? null : (
+            <p className="hub-notice mt-5" role="status">Sign-in is not available yet. Please check back soon.</p>
+          )}
+
+          {session.passwordAuth && (
+            <form
+              onSubmit={accountMode === 'forgot' ? requestReset : submitAccount}
+              className="mt-6 space-y-3 border-t border-forest-900/10 pt-5"
+            >
+              <p className="text-center text-[11px] font-semibold text-forest-900/55">
+                {accountMode === 'register' ? 'Create a member account' : accountMode === 'forgot' ? 'Reset your password' : 'Member sign in'}
+              </p>
+              {accountMode === 'register' && (
+                <label className="hub-label" htmlFor="account-name">
+                  Full name
+                  <input
+                    id="account-name"
+                    className="hub-field mt-1"
+                    required
+                    minLength={2}
+                    maxLength={60}
+                    autoComplete="name"
+                    value={accountName}
+                    onChange={(e) => setAccountName(e.target.value)}
+                  />
+                </label>
+              )}
+              <label className="hub-label" htmlFor="account-email">
+                Email address
+                <input
+                  id="account-email"
+                  className="hub-field mt-1"
+                  required
+                  type="email"
+                  maxLength={254}
+                  autoComplete="email"
+                  value={accountEmail}
+                  onChange={(e) => setAccountEmail(e.target.value)}
+                />
+              </label>
+
+              {accountMode === 'forgot' ? (
+                <>
+                  <p className="hub-hint">We will send a single-use link that is valid for 30 minutes.</p>
+                  {accountNotice && <p className="hub-notice" role="status">{accountNotice}</p>}
+                  {devResetLink && (
+                    <a href={devResetLink} className="block break-all text-xs font-semibold text-forest-700 underline underline-offset-4">
+                      Open reset link
+                    </a>
+                  )}
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between gap-3">
+                    <label className="hub-label" htmlFor="account-password">Password</label>
+                    {accountMode === 'login' && (
+                      <button
+                        type="button"
+                        onClick={() => switchMode('forgot')}
+                        className="text-xs font-semibold text-forest-700 underline underline-offset-4"
+                      >
+                        Forgot password?
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    id="account-password"
+                    className="hub-field"
+                    required
+                    type="password"
+                    minLength={accountMode === 'register' ? 10 : 1}
+                    maxLength={128}
+                    autoComplete={accountMode === 'register' ? 'new-password' : 'current-password'}
+                    value={accountPassword}
+                    onChange={(e) => setAccountPassword(e.target.value)}
+                    aria-describedby="password-hint"
+                  />
+                  {accountMode === 'register' && (
+                    <label className="hub-label" htmlFor="account-confirm-password">
+                      Confirm password
+                      <input
+                        id="account-confirm-password"
+                        className="hub-field mt-1"
+                        required
+                        type="password"
+                        minLength={10}
+                        maxLength={128}
+                        autoComplete="new-password"
+                        value={accountConfirmPassword}
+                        onChange={(e) => setAccountConfirmPassword(e.target.value)}
+                      />
+                    </label>
+                  )}
+                  <p id="password-hint" className="hub-hint">
+                    {accountMode === 'register' ? 'Use at least 10 characters. Both passwords must match.' : 'Enter the password for your member account.'}
+                  </p>
+                </>
+              )}
+
+              {accountError && <p role="alert" className="hub-message">{accountError}</p>}
+              <button disabled={accountBusy} className="hub-btn hub-btn-primary w-full">
+                {accountBusy && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
+                {accountMode === 'forgot' ? (
+                  <><Mail className="h-3.5 w-3.5" aria-hidden="true" /> Send reset link</>
+                ) : accountMode === 'register' ? 'Create account' : 'Sign in'}
+              </button>
+              {accountMode === 'forgot' ? (
+                <button
+                  type="button"
+                  onClick={() => switchMode('login')}
+                  className="flex w-full items-center justify-center gap-2 text-xs font-semibold text-forest-700 underline underline-offset-4"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" /> Back to sign in
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => switchMode(accountMode === 'register' ? 'login' : 'register')}
+                  className="w-full text-xs font-semibold text-forest-700 underline underline-offset-4"
+                >
+                  {accountMode === 'register' ? 'Already have an account? Sign in' : 'Create a member account'}
+                </button>
+              )}
+              {accountMode !== 'forgot' && <p className="hub-hint text-center">New member accounts may need approval from a Guardian Admin.</p>}
+            </form>
+          )}
+
+          {!session.passwordAuth && signInReady && (
+            <p className="hub-hint mt-4">New accounts need approval from a Guardian Admin.</p>
+          )}
+
+          {session.devLogin && (
+            <form onSubmit={devLogin} className="mt-6 space-y-3 border-t border-forest-900/10 pt-5">
+              <p className="text-[11px] font-semibold text-forest-900/55">Development sign-in</p>
+              <label className="hub-label" htmlFor="dev-email">
+                Email address
+                <input
+                  id="dev-email"
+                  className="hub-field mt-1"
+                  type="email"
+                  required
+                  value={devEmail}
+                  onChange={(e) => setDevEmail(e.target.value)}
+                />
+              </label>
+              <button className="hub-btn hub-btn-secondary w-full">Sign in</button>
+            </form>
+          )}
         </div>
-        <p className="text-xs text-[#3f4a42]/65">Want to take part or support the nursery? <Link href="/#contact" className="text-[#285b3c] underline underline-offset-4 decoration-[#c3a66b]/50 hover:text-[#173d2b]">Contact us</Link> or <Link href="/#donate" className="text-[#285b3c] underline underline-offset-4 decoration-[#c3a66b]/50 hover:text-[#173d2b]">donate via M-Pesa</Link>.</p>
       </div>
     </div>
   );

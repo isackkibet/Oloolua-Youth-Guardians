@@ -1,6 +1,6 @@
 'use client';
 
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 
 // From the original workshops.html JS array
 const WORKSHOP_IMAGES = [

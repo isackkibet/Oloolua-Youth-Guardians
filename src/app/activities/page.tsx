@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 import { PlusCircle, MapPin, BookOpen, ArrowRight } from 'lucide-react';
 
 // Static illustrations of our field work. Per PRD v1.2 (B4) every static

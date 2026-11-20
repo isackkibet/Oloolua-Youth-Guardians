@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { requireMember, toolStatus } from '@/lib/guardian/http';
-import { TOOLS, runTool } from '@/lib/guardian/tools';
+import { requireMember, toolStatus } from '@backend/guardian/http';
+import { TOOLS, runTool } from '@backend/guardian/tools';
 
 /**
  * The Hub's own access to Guardian tools (no AI involved, no prompt used).

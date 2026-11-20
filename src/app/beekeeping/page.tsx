@@ -1,6 +1,6 @@
 'use client';
 
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 
 const BEE_IMAGES = ['bee1.jpeg', 'bee2.jpeg', 'bee3.jpeg', 'bee5.jpeg', 'bee6.jpeg'];
 

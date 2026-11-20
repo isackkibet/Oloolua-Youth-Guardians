@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { SESSION_COOKIE, createSessionCookieValue, devLoginEnabled, sessionCookieOptions, upsertSignedInUser } from '@/lib/guardian/session';
+import { SESSION_COOKIE, createSessionCookieValue, devLoginEnabled, sessionCookieOptions, upsertSignedInUser } from '@backend/guardian/session';
 
 /**
  * Local-testing sign-in without Google. Exists only when NODE_ENV is

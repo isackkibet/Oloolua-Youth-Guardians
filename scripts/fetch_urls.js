@@ -1,5 +1,6 @@
 const fs = require('fs');
 const https = require('https');
+const path = require('path');
 
 const speciesList = [
     { id: 'silver_oak', title: 'Grevillea_robusta' },
@@ -49,8 +50,9 @@ async function fetchUrls() {
             console.error(e);
         }
     }
-    fs.writeFileSync('image_map.json', JSON.stringify(map, null, 2));
-    console.log('Saved image_map.json');
+    const outputPath = path.join(__dirname, '..', 'legacy', 'static-site', 'image_map.json');
+    fs.writeFileSync(outputPath, JSON.stringify(map, null, 2));
+    console.log(`Saved ${outputPath}`);
 }
 
 fetchUrls();

@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { requireMember } from '@/lib/guardian/http';
-import { handleMessage, sanitizeHistory } from '@/lib/guardian/assistant';
-import { getQuota } from '@/lib/guardian/quota';
+import { requireMember } from '@backend/guardian/http';
+import { handleMessage, sanitizeHistory } from '@backend/guardian/assistant';
+import { getQuota } from '@backend/guardian/quota';
 
 // Allow time for a few rounds of tool calls with the AI provider.
 export const maxDuration = 60;

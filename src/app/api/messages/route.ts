@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sql, initDbSchema } from '@/lib/db';
+import { sql, initDbSchema } from '@backend/db';
 
 // Write-only by design: these rows hold names, emails and phone numbers, so
 // there is deliberately no GET handler. Rate limiting and origin checks are

@@ -18,12 +18,11 @@
     "jsx": "react-jsx",
     "incremental": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "*": [
-        "./*"
-      ]
+      "@/*": ["./src/*"],
+      "@frontend/*": ["./src/frontend/*"],
+      "@backend/*": ["./src/backend/*"],
+      "@shared/*": ["./src/shared/*"],
+      "*": ["./*"]
     },
     "plugins": [
       {

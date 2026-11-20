@@ -1,4 +1,4 @@
-import PageLayout from '@/components/PageLayout';
+import PageLayout from '@frontend/components/PageLayout';
 import Link from 'next/link';
 
 export default function VisionPage() {
