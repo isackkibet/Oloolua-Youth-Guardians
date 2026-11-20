@@ -49,9 +49,10 @@ export function passwordAuthEnabled(): boolean {
 export function authConfigured(): { ok: boolean; missing: string[] } {
   const missing: string[] = [];
   if (!secret()) missing.push('GUARDIAN_SESSION_SECRET (32+ characters)');
-  const google = !!process.env.GOOGLE_CLIENT_ID && !!process.env.GOOGLE_CLIENT_SECRET;
   const privy = !!process.env.NEXT_PUBLIC_PRIVY_APP_ID && !!process.env.PRIVY_APP_SECRET;
-  if (!google && !privy && !passwordAuthEnabled()) missing.push('an authentication provider');
+  if (!privy && process.env.GUARDIAN_PASSWORD_AUTH === 'false') {
+    missing.push('GUARDIAN_PASSWORD_AUTH=true or Privy credentials');
+  }
   return { ok: missing.length === 0 || devLoginEnabled(), missing };
 }
 

@@ -109,6 +109,7 @@ export interface Quota { limit: number; used: number; remaining: number; period:
 
 export interface SessionInfo {
   authConfigured: boolean;
+  authConfigMissing?: string[];
   devLogin: boolean;
   aiEnabled: boolean;
   privy?: boolean;

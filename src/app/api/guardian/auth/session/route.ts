@@ -7,7 +7,14 @@ import { privyConfigured } from '@backend/guardian/privy';
 /** Who is signed in, their role and prompt allowance. */
 export async function GET(request: NextRequest) {
   const config = authConfigured();
-  const base = { authConfigured: config.ok, devLogin: devLoginEnabled(), aiEnabled: aiConfigured(), privy: privyConfigured(), passwordAuth: passwordAuthEnabled() };
+  const base = {
+    authConfigured: config.ok,
+    authConfigMissing: config.missing,
+    devLogin: devLoginEnabled(),
+    aiEnabled: aiConfigured(),
+    privy: privyConfigured(),
+    passwordAuth: passwordAuthEnabled(),
+  };
   try {
     const viewer = await getViewer(request);
     if (!viewer) return NextResponse.json({ ...base, signedIn: false });
