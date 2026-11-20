@@ -20,10 +20,10 @@ export const CAN = {
   read: ['viewer', 'keeper', 'manager', 'verifier', 'admin'],
   record: ['keeper', 'manager', 'admin'],
   correctOwn: ['keeper', 'manager', 'admin'],
-  correctAny: ['manager', 'admin'],
-  verify: ['verifier', 'admin'],
-  viewAudit: ['manager', 'verifier', 'admin'],
-  manageNursery: ['manager', 'admin'],
+  correctAny: ['keeper', 'manager', 'admin'],
+  verify: ['keeper', 'verifier', 'admin'],
+  viewAudit: ['keeper', 'manager', 'verifier', 'admin'],
+  manageNursery: ['keeper', 'manager', 'admin'],
   manageUsers: ['admin'],
 } as const satisfies Record<string, readonly Role[]>;
 

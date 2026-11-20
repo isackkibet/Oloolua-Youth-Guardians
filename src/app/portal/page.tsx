@@ -191,7 +191,7 @@ export default function GuardianHubPage() {
                 <p className="mt-2 text-sm text-forest-900/65">
                   {session.membershipStatus === 'suspended'
                     ? 'Your access to the Guardian Hub has been suspended. Please contact a Guardian Admin.'
-                    : `You are signed in as ${session.user?.email ?? session.user?.name}. A Guardian Admin must approve your account and choose a role before Guardian data is available.`}
+                    : `You are signed in as ${session.user?.email ?? session.user?.name}. This account is still marked pending from an earlier setup. Sign out and sign in again to activate it.`}
                 </p>
                 <SignOutButton
                   onDone={() => { setQuota(null); void loadSession(); }}

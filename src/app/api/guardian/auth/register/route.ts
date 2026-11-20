@@ -12,7 +12,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD_LENGTH = 10;
 const MAX_PASSWORD_LENGTH = 128;
 
-/** Create a member account. Membership stays pending until a Guardian Admin approves it. */
+/** Create a member account. Sign-in is active immediately with all non-Admin capabilities. */
 export async function POST(request: NextRequest) {
   if (!passwordAuthEnabled()) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   const body = await request.json().catch(() => null);

@@ -203,7 +203,7 @@ export default function RegisterForm() {
       </div>
 
       <p className="mt-5 text-xs leading-relaxed text-forest-900/60">
-        New accounts start as Pending. A Guardian Admin reviews each request before record access is granted.
+        Your account is active immediately with all Guardian Hub tools except user management.
       </p>
 
       <button

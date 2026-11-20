@@ -1126,7 +1126,7 @@ export function TeamPanel({ myUserId, refreshKey }: { myUserId: string; refreshK
       {notice && <Notice text={notice} />}
 
       <section className="hub-panel">
-        <PanelHead title="Team and roles" note="New sign-ups start as Pending. Choose a role to approve them.">
+        <PanelHead title="Team and roles" note="New sign-ups are active Keepers. Only the owner can grant Admin.">
           <RefreshButton onClick={() => void team.reload()} busy={team.loading} />
         </PanelHead>
         {team.error && <div className="px-4 pt-4"><Problem text={team.error} /></div>}

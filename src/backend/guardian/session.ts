@@ -139,11 +139,16 @@ function adminEmails(): Set<string> {
   );
 }
 
+/** Only the owner listed in GUARDIAN_ADMIN_EMAILS may grant the Admin role. */
+export function isOwnerEmail(email: string | null | undefined): boolean {
+  return !!email && adminEmails().has(email.toLowerCase());
+}
+
 /**
  * Finds or creates the user for a verified identity, links a seeded team
  * member when an Admin has set their email, and applies the access policy:
- * listed admin emails become Admin; everyone else starts Pending until an
- * Admin approves them (or Viewer when GUARDIAN_AUTO_VIEWER=true).
+ * listed admin emails become Admin; everyone else becomes an active Keeper
+ * immediately, with every non-Admin capability. No approval queue.
  */
 export async function upsertSignedInUser(identity: { sub: string; email: string; name: string }): Promise<string> {
   await ensureGuardianSchema();
@@ -174,10 +179,10 @@ export async function upsertSignedInUser(identity: { sub: string; email: string;
     await sql`INSERT INTO guardian_memberships (user_id, hub_id, role, status) VALUES (${userId}, ${HUB_ID}, 'admin', 'active')
       ON CONFLICT (user_id, hub_id) DO UPDATE SET role = 'admin', status = 'active', updated_at = now()`;
   } else {
-    const autoViewer = process.env.GUARDIAN_AUTO_VIEWER === 'true';
     await sql`INSERT INTO guardian_memberships (user_id, hub_id, role, status)
-      VALUES (${userId}, ${HUB_ID}, 'viewer', ${autoViewer ? 'active' : 'pending'})
-      ON CONFLICT (user_id, hub_id) DO NOTHING`;
+      VALUES (${userId}, ${HUB_ID}, 'keeper', 'active')
+      ON CONFLICT (user_id, hub_id) DO UPDATE SET role = 'keeper', status = 'active', updated_at = now()
+      WHERE guardian_memberships.status = 'pending'`;
   }
   return userId;
 }
@@ -227,11 +232,9 @@ export async function registerPasswordUser(name: string, email: string, password
   `) as { id: string }[];
   if (!rows[0]) return null;
   const isAdmin = adminEmails().has(cleanEmail);
-  const autoViewer = process.env.NODE_ENV === 'development' || process.env.GUARDIAN_AUTO_VIEWER === 'true';
-  const role: Role = isAdmin ? 'admin' : 'viewer';
-  const status = isAdmin || autoViewer ? 'active' : 'pending';
+  const role: Role = isAdmin ? 'admin' : 'keeper';
   await sql`INSERT INTO guardian_memberships (user_id, hub_id, role, status)
-    VALUES (${rows[0].id}, ${HUB_ID}, ${role}, ${status})`;
+    VALUES (${rows[0].id}, ${HUB_ID}, ${role}, 'active')`;
   return rows[0].id;
 }
 
@@ -239,11 +242,19 @@ export async function registerPasswordUser(name: string, email: string, password
 export async function authenticatePassword(email: string, password: string): Promise<string | null> {
   await ensureGuardianSchema();
   const rows = (await sql`
-    SELECT id, password_hash FROM guardian_users WHERE lower(email) = ${email.toLowerCase()} LIMIT 1
-  `) as { id: string; password_hash: string | null }[];
+    SELECT id, email, password_hash FROM guardian_users WHERE lower(email) = ${email.toLowerCase()} LIMIT 1
+  `) as { id: string; email: string | null; password_hash: string | null }[];
   const row = rows[0];
   if (!await verifyPassword(password, row?.password_hash ?? null)) return null;
   await sql`UPDATE guardian_users SET last_login_at = now() WHERE id = ${row!.id}`;
+  if (adminEmails().has((row.email ?? '').toLowerCase())) {
+    await sql`INSERT INTO guardian_memberships (user_id, hub_id, role, status)
+      VALUES (${row.id}, ${HUB_ID}, 'admin', 'active')
+      ON CONFLICT (user_id, hub_id) DO UPDATE SET role = 'admin', status = 'active', updated_at = now()`;
+  } else {
+    await sql`UPDATE guardian_memberships SET role = 'keeper', status = 'active', updated_at = now()
+      WHERE user_id = ${row.id} AND hub_id = ${HUB_ID} AND status = 'pending'`;
+  }
   return row!.id;
 }
 

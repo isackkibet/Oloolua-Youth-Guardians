@@ -377,11 +377,11 @@ export async function confirmDraft(viewer: Viewer, draftId: string, acknowledged
   return fail('conflict', 'This draft could not be saved. It may have expired, or the record it corrects has changed.');
 }
 
-/** Verify or reject a Confirmed record (Verifier, Admin). Never your own. */
+/** Verify or reject a Confirmed record (Keeper, Verifier, Admin). Never your own. */
 export async function reviewRecord(viewer: Viewer, recordId: string, decision: 'verify' | 'reject', reason: string): Promise<Outcome<{ status: string }>> {
   if (!can(viewer.role, 'verify')) {
     await audit({ userId: viewer.user.id, tool: 'review_activity_record', result: 'denied', recordId });
-    return fail('forbidden', 'Only a Verifier or Admin can verify or reject records.');
+    return fail('forbidden', 'Only a Keeper, Verifier or Admin can verify or reject records.');
   }
   const [rec] = (await sql`SELECT recorded_by, status FROM guardian_activities WHERE id = ${recordId} AND nursery_id = ${NURSERY_ID}`) as { recorded_by: string; status: string }[];
   if (!rec) return fail('not_found', 'Record not found.');

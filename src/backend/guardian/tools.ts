@@ -18,7 +18,7 @@ import { ACTIVITY_TYPES, ACTIVITY_TYPE_KEYS, ROLES, can, isActivityType, type Ca
 import { activities, keeperDiary, nurserySummary, searchKnowledge, seedbeds, species } from './data';
 import { audit, createDraft, reviewRecord, startCorrection } from './records';
 import { isValidIsoDate } from './time';
-import type { Viewer } from './session';
+import { isOwnerEmail, type Viewer } from './session';
 import type { DraftFields } from './extract';
 
 // Flat for the same reason as Outcome in records.ts (strict is off).
@@ -273,6 +273,15 @@ export const TOOLS: Record<string, ToolDef> = {
       if (!/^[0-9a-f-]{36}$/.test(userId)) return { ok: false, error: 'invalid', message: 'Unknown member.' };
       if (userId === ctx.viewer.user.id && (args.role !== undefined || args.status !== undefined)) {
         return { ok: false, error: 'forbidden', message: 'You cannot change your own role or status. Ask another Admin.' };
+      }
+      if (args.role === 'admin' && !isOwnerEmail(ctx.viewer.user.email)) {
+        return { ok: false, error: 'forbidden', message: 'Only the hub owner can grant the Admin role.' };
+      }
+      if (args.role !== undefined || args.status !== undefined) {
+        const [target] = (await sql`SELECT email FROM guardian_users WHERE id = ${userId}`) as { email: string | null }[];
+        if (isOwnerEmail(target?.email) && !isOwnerEmail(ctx.viewer.user.email)) {
+          return { ok: false, error: 'forbidden', message: 'Only the hub owner can change the owner account.' };
+        }
       }
       if (args.role !== undefined) {
         if (!ROLES.includes(args.role as Role)) return { ok: false, error: 'invalid', message: 'Unknown role.' };
